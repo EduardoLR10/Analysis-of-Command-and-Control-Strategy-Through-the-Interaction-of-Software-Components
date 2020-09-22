@@ -1,0 +1,30 @@
+\ProvidesPackage{mymacros}
+
+% Definitions
+\newcommand{\reliabilityEquivalence}{r-\lowercase{equiv\-a\-lence}}
+\newcommand{\reliabilityEquivalent}{r-\lowercase{equiv\-a\-lent}}
+
+\newcommand{\annotativeModelFundamental}[1]{\ensuremath{(\mathcal{P}{#1},\allowbreak p,\allowbreak w,\allowbreak \mathit{FM})}}
+\newcommand{\fdtmcIndexed}[1]{\annotativeModelFundamental{_{#1}}}
+\newcommand{\fdtmc}{\annotativeModelFundamental{}}
+\newcommand{\annotativeModel}{\annotativeModelFundamental{}}
+
+\newcommand{\compositionalModel}{\ensuremath{(\mathscr{P},\allowbreak \prec,\allowbreak I,\allowbreak idt,\allowbreak p,\allowbreak w',\allowbreak \mathit{FM})}}
+
+\newcommand{\dtmc}{\ensuremath{(S,\allowbreak s_{0},\allowbreak \mathbf{P},\allowbreak T)}}
+
+\newcommand{\pmcFoundation}[2]{\ensuremath{(S,\allowbreak s_{0},\allowbreak #1,\allowbreak #2,\allowbreak T)}}
+\newcommand{\pmc}{\pmcFoundation{X}{\mathbf{P}}}
+
+\newcommand{\compPmcFoundation}[3]{\ensuremath{\ifthenelse{\equal{#3}{}}
+    {(S#1#2,\allowbreak s#1#2_{0},\allowbreak s#1#2_{\mathit{suc}},\allowbreak s#1#2_{\mathit{err}},\allowbreak X#1#2,\allowbreak \mathbf{P}#1#2,\allowbreak T#1#2)}
+    {(S#1#2_#3,\allowbreak s#1#2_{#3_{0}},\allowbreak s#1#2_{#3_{\mathit{suc}}},\allowbreak s#1#2_{#3_{\mathit{err}}},\allowbreak X#1#2_#3,\allowbreak \mathbf{P}#1#2_#3,\allowbreak T#1#2_#3)}
+}}
+\newcommand{\compPmcAbove}[2]{\compPmcFoundation{#1}{^{#2}}{}}
+\newcommand{\compPmcSuper}[1]{\compPmcFoundation{^{#1}}{}{}}
+\newcommand{\compPmcPrime}[1]{\compPmcFoundation{#1}{}{}}
+\newcommand{\compPmcSub}[1]{\compPmcFoundation{}{}{#1}}
+\newcommand{\compPmc}{\compPmcFoundation{}{}{}}
+
+\newcommand{\dotref}[1]{\mbox{\nameref{#1}}}
+%\newcommand{\dotref}[1]{\mbox{\Cref{#1}}}

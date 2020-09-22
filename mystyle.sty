@@ -1,0 +1,200 @@
+\ProvidesPackage{mystyle}
+
+\usepackage[T1]{fontenc} % Acentos no output
+\usepackage[utf8]{inputenc} % Acentos no input
+
+\usepackage{natbib}
+\usepackage[english,brazil]{babel}
+\usepackage{graphicx}   % needed for figures
+\usepackage{subcaption} % subfigures
+\usepackage{multirow} % table cells spaning multiple rows
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm,thmtools}
+\usepackage{mathrsfs}
+%\usepackage[colorlinks]{hyperref}  % deactivated because of conflict with "acmart" document class.
+\usepackage{listings}
+\usepackage{stmaryrd}
+\usepackage{cleveref}
+\usepackage{ifthen}
+\usepackage{mathtools}
+%\usepackage[dvipsnames]{xcolor}  % deactivated because of conflict with "acmart" document class.
+\usepackage[page,title]{appendix}
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usepackage[outputdir=tmp/]{dot2texi}
+\usetikzlibrary{shapes,arrows,fit,positioning}
+\usepackage{pdflscape}
+\usepackage{framed}
+\usepackage[htt]{hyphenat}
+
+% Make it easy to spot overfull hbox.
+\overfullrule=2cm
+
+% Hyperlinks setup
+\AtBeginDocument{%
+    \hypersetup{%colorlinks=true,
+                linkcolor=cyan,
+                citecolor=blue
+                }
+}
+
+
+% Theorem-related commands setup
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+ 
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{property}{Property}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+% Code listings configuration
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+% Define Language
+\lstdefinelanguage{PVS}{%
+    % list of keywords
+    morekeywords={
+      if,
+      then,
+      else,
+      endif,
+      cond,
+	  endcond,
+      inductive,
+      recursive,
+      not,
+      and,
+      or,
+      true,
+      false,
+      exists,
+      forall,
+      implies,
+      iff,
+      lambda,
+      axiom,
+      lemma,
+      theorem,
+      corollary,
+      obligation,
+      judgement,
+      HAS\_TYPE,
+      THEORY,
+      IMPORTING,
+      BEGIN,
+      END,
+      TYPE,
+      FROM,
+      VAR,
+      DATATYPE,
+      CASES,
+      ENDCASES,
+      MEASURE,
+      BY,
+      conversion,
+      let,
+      in,
+      where
+    },
+    otherkeywords={
+      =,
+      :=,
+      Rule?,
+      TYPE+,
+      conversion+,
+      |-------,
+      Q.E.D.
+    },
+    sensitive=false, % keywords are not case-sensitive
+    morecomment=[l]{\%}, % l is for line comment
+    %morecomment=[s]{;}{;}, % s is for start and end delimiter
+    morestring=[b]" % defines that strings are enclosed in double quotes
+}
+\lstset{%
+    language=PVS,
+	backgroundcolor=\color{white},
+	captionpos=b,
+	breakatwhitespace=true,
+	breaklines=true,
+	basicstyle=\footnotesize\ttfamily,
+    numberstyle=\tiny\color{gray},
+	numbers=none,
+    %stepnumber=2,
+	showstringspaces=false,
+	commentstyle=\color{mygreen},
+	keywordstyle=\color{blue},
+	stringstyle=\color{mymauve},
+	frame=none,
+    %frame=trbl,
+    escapeinside={(*@}{@*)},
+    texcl=true,
+    %aboveskip=1cm,
+    %belowskip=1cm
+}
+
+
+\newcommand{\theoremColorName}{cyan}
+\newcommand{\lemmaColorName}{green}
+\newcommand{\corollaryColorName}{\lemmaColorName}
+\newcommand{\definitionColorName}{red}
+
+\colorlet{TheoremColor}{\theoremColorName}
+\colorlet{LemmaColor}{\lemmaColorName}
+\colorlet{CorollaryColor}{\corollaryColorName}
+\colorlet{DefinitionColor}{\definitionColorName}
+
+
+%Diagram styles
+\colorlet{InitialColor}{Cyan}
+\colorlet{SuccessColor}{Green}
+\colorlet{ErrorColor}{Red}
+
+\tikzstyle{Slot} = [ellipse, densely dashed]
+\tikzstyle{InitialSlot} = [draw=InitialColor, Slot]
+\tikzstyle{SuccessSlot} = [draw=SuccessColor, Slot]
+\tikzstyle{ErrorSlot} = [draw=ErrorColor, Slot]
+\tikzstyle{SlotBox} = [draw, dashed, Blue, label={[shift={(-7ex,0ex)}]north east:#1}]
+\tikzstyle{InterfaceBoxBase} = [draw, Green, label={[shift={(-8ex,-3ex)}]north east:#1}]
+\tikzstyle{InterfaceBox} = [InterfaceBoxBase=#1, inner sep=5ex] 
+\tikzstyle{InterfaceBoxTight} = [InterfaceBoxBase=#1, inner ysep=3ex, inner xsep=2ex]
+
+\tikzstyle{Initial} = [draw, fill=InitialColor, text=white, ellipse]
+\tikzstyle{Success} = [draw, fill=SuccessColor, text=white, ellipse]
+\tikzstyle{Error} = [draw, fill=ErrorColor, text=white, ellipse]
+
+\tikzstyle{SwitchState} = [Blue, Slot]
+\newcommand{\switchStatesStyle}{blue dashed}
+\tikzstyle{SodaState} = [ProcessBlue]
+\tikzstyle{SodaTasteState} = [MidnightBlue]
+\tikzstyle{TeaState} = [BurntOrange!85!Black]
+\tikzstyle{TeaTasteState} = [Plum!85!Black]
+
+\colorlet{NewEdgeColor}{Green}
+\colorlet{RemovedEdgeColor}{Red}
+\tikzstyle{NewEdge} = [->, NewEdgeColor, thick]
+\tikzstyle{RemovedEdge} = [->, RemovedEdgeColor, densely dashed]
+
+\tikzstyle{HlEdge} = [->, Green, thick]
+
+
+\colorlet{ProductBlue}{Blue}
+\colorlet{FeatureGreen}{Green}
+\colorlet{FamilyRed}{Red}
+
+\tikzstyle{product} = [->, ProductBlue, densely dotted]
+\tikzstyle{feature} = [->, FeatureGreen]
+\tikzstyle{family} = [->, FamilyRed, densely dashed]
+
+\newcommand{\productStyleArrow}{b\lowercase{lue dotted}}
+\newcommand{\featureStyleArrow}{g\lowercase{reen solid}}
+\newcommand{\familyStyleArrow}{r\lowercase{ed dashed}}
+
+\newcommand{\prodStep}[1]{\textcolor{ProductBlue}{#1}}
+\newcommand{\featStep}[1]{\textcolor{FeatureGreen}{#1}}
+\newcommand{\famStep}[1]{\textcolor{FamilyRed}{#1}}

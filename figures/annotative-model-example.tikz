@@ -1,0 +1,47 @@
+\begin{tikzpicture}[node distance=20pt and 20pt,
+	align=center,
+	text centered]%, on grid]
+	\scriptsize
+	
+	\node [draw, circle] (ss0) {$s_0$};
+	\node [draw, circle, right= of ss0] (ss1) {$s_1$};
+	\node [draw, circle, right= of ss1] (ss2) {$s_2$};
+	\node [draw, circle, right= of ss2] (sssuc) {$s_{\mathit{suc}}$};
+	\node [draw, circle, below= of sssuc] (sserr) {$s_{\mathit{err}}$};
+	
+	\draw[->] (ss0) to node [midway, above] {$0.99$} (ss1);
+	\draw[->] (ss0) to [bend right=25] node [near start, right] {$0.01$} (sserr);
+	\draw[HlEdge] (ss1) to node [midway, above] {$1$} (ss2);
+	\draw[HlEdge, red] (ss1) to [bend left=35] node [midway, above] (sshortlab) {$0$} (sssuc);
+	\draw[->] (ss2) to node [midway, above] {$0.99$} (sssuc);
+	\draw[->] (ss2) to [bend right=25] node [near start, right] {$0.01$} (sserr);
+	\draw[->] (sssuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (sssuclab) {$1$} (sssuc);
+	\draw[->] (sserr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (sserrlab) {$1$} (sserr);
+	
+	\node [draw=none, rectangle, fit=(ss0) (sssuc) (sserrlab) (sserr) (sshortlab)] (dtmcTrue) {};
+
+	\normalsize
+	\node [draw, rectangle, above right= 50pt of sssuc] (pc) {Is "$x$" present?};
+	\scriptsize
+
+	\node [draw, circle, below right= 50pt of pc] (fs0) {$s_0$};
+	\node [draw, circle, right= of fs0] (fs1) {$s_1$};
+	\node [draw, circle, right= of fs1] (fs2) {$s_2$};
+	\node [draw, circle, right= of fs2] (fssuc) {$s_{\mathit{suc}}$};
+	\node [draw, circle, below= of fssuc] (fserr) {$s_{\mathit{err}}$};
+	
+	\draw[->] (fs0) to node [midway, above] {$0.99$} (fs1);
+	\draw[->] (fs0) to [bend right=25] node [near start, right] {$0.01$} (fserr);
+	\draw[HlEdge, red] (fs1) to node [midway, above] {$0$} (fs2);
+	\draw[HlEdge] (fs1) to [bend left=35] node [midway, above] (fshortlab) {$1$} (fssuc);
+	\draw[->] (fs2) to node [midway, above] {$0.99$} (fssuc);
+	\draw[->] (fs2) to [bend right=25] node [near start, right] {$0.01$} (fserr);
+	\draw[->] (fssuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (fssuclab) {$1$} (fssuc);
+	\draw[->] (fserr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (fserrlab) {$1$} (fserr);
+	
+	\node [draw=none, rectangle, fit=(fs0) (fssuc) (fserrlab) (fserr) (fshortlab)] (dtmcFalse) {};
+	
+	\draw[->] (pc) to node [midway, left= 10pt] {True} (dtmcTrue);
+	\draw[->, dashed] (pc) to node [midway, right= 10pt] {False} (dtmcFalse);
+	
+	\end{tikzpicture}

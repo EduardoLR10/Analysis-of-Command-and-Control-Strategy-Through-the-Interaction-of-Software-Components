@@ -1,0 +1,312 @@
+\section{Discussion}
+\label{sec:evaluation}
+The formalization described in Section~\ref{sec:abstraction-description}, which as mechanized into PVS, provides formal evidence on the validity of the framework. In this section, we complementarily evaluate the framework qualitatively. 
+%Correspondingly, 
+We first discuss the framework's generality (Section~\ref{sec:frameworkInstances}). Then, we discuss findings, related strengths, and limitations (Section~\ref{framework:discussion}). Finally, we discuss threats to validity  (Section~\ref{sec:threatsToValidity}).
+
+\subsection{Framework's Generality}
+\label{sec:frameworkInstances}
+
+%To qualitatively assess the generality of the framework, we retrospectively discuss to what extent it can describe five representative product-line analyses~\cite{Thum2014} on the following properties: safety, performance, inter-procedural static analyses, security, and functional program properties. 
+In this section, we qualitatively assess the framework's generality by retrospectively discussing to what extent it can describe existing product-line analyses. In particular, we show how  the framework's elements, previously listed in Table~\ref{table:analysis-abstraction-framework} and within the structure of the generic diagram in Figure~\ref{fig:strategies-generic}, can be related to different models, properties, and analyses. 
+%The first column in Table~\ref{fig:inst} refers to framework's elements, whereas the remaining columns correspond to product-line analyses proposed elsewhere. 
+These analyses were chosen because three of them (safety, data-flow facts, and functional program properties) represent different types in a comprehensive survey~\citep{Thum2014} and  the remaining two (performance and security) are more recent. 
+%we conceptually discuss instances of the framework thereby qualitatively assessing its generality. 
+An analytical assessment, by instantiating the mechanized theory (cf. Section~\ref{sec:abstraction-description}) for concrete analyses, is yet to be performed. Such task is outside the scope of this work and is regarded as future work. 
+
+%In every cell from the second column onwards, we refer to the counterpart of the framework's element in each work by mentioning the corresponding concrete concepts therein together with definition numbers when available. In the following sections, we discuss each analysis.
+
+%In this section, we conceptually discuss instances of the framework thereby qualitatively assessing its generality. Mechanized instantiation in PVS is outside the scope of this work and is regarded as future work. 
+%Table~\ref{fig:inst} synthesizes this assessment, showing how  the framework's elements, previously listed in Table~\ref{table:analysis-abstraction-framework} and within the structure of the generic diagram in Figure~\ref{fig:strategies-generic}, can be instantiated for different models, properties, and analyses. 
+%The first column in Table~\ref{fig:inst} refers to framework's elements, whereas the remaining columns correspond to product-line analyses proposed elsewhere. These analyses were chosen because they represent different types  in a comprehensive survey~\citep{Thum2014} and the last one is more recent. In every cell from the second column onwards, we refer to the instantiation of the framework's elements in each work by mentioning the corresponding concrete concepts therein together with definition numbers when available. In the following sections, we discuss each instance.
+
+
+\subsubsection{Safety Analysis}
+\label{sec:instance-splverifier}
+
+\citet{ApelSimulator} provide the toolchain SPLverifier for empirically comparing family-based, 
+product-based, and sample-based model checking of domain-specific safety properties in product lines 
+written in C and Java. To manage variability, the authors leverage a compositional representation, using 
+feature modules and derivation via superimposition~\cite{FeatureHouse}. For product-based analysis, all 
+products corresponding to valid configurations are derived via superimposition and then model-checked 
+against a number of safety properties via explicit-state model checking. The sample-based analysis is an 
+optimized version of product-based analysis, whereby different strategies are used: 1-wise, 2-wise, and 
+3-wise, each of which defines a corresponding sampling function for selecting subsets of products to be 
+model-checked, after which the analysis is product-based.  
+
+In contrast, for family-based analysis, first the composition mechanism of FeatureHouse~\cite{FeatureHouse} is adjusted to 
+perform variability encoding: essentially, the variability induced by different combinations of features 
+is encoded in the form of conditional program executions using if statements so that the product line is 
+transformed into a product simulator, which simulates the behavior of all products,
+depending on the values of feature variables that represent the presence or absence of individual features. 
+Then, off-the-shelf model checkers are used to perform verification of safety properties by means of explicit-state 
+and symbolic model checking. The model checker exploits sharing between products using two principles: late 
+splitting and early joining. The former means performing analysis without variability until encountering it, 
+that is, the model checker explores execution paths of different products only once as long as such paths are 
+equal; the latter means attempting to join intermediate results as early as possible, so analysis branches 
+differing only on the value of feature variables should be analyzed only once. The result of model checking 
+are sets of products, which are encoded in BDDs for efficient representation.
+
+\begin{figure}[!htbp]
+	\centering
+    %\resizebox{\textwidth}{!}{%
+        \includegraphics{figures/instances/splverifier.tikz}
+    %}
+	\caption{Framework description of  the work by \citet{ApelSimulator} (\Cref{sec:instance-splverifier})}
+	\label{fig:instance-splverifier}
+\end{figure}
+
+\subsubsection{Performance Analysis}
+\label{sec:instance-performance}
+
+\citet{kowal_scaling_2015} present an approach for variability-aware analysis of software performance 
+models. The underlying variability-free model is a Performance Annotated Activity Diagram (PAAD), which is an UML 
+activity diagram with performance annotations. In such a model, nodes represent a service center with given multiplicity, 
+initial client distribution, and service time distribution; edges are annotated with probabilities to model operational 
+profiles. Based on this model, the property of interest is throughput, which is defined as the difference between the 
+number of incoming and outcoming jobs out of all service stations of the model. The non-variability-aware analysis of 
+this PAAD abstracts this model as a Markov population process and approximates its behavior by a compact system of 
+ordinary differential equations (traffic equations), whose solution is the throughput of the model. 
+
+Variability management is accomplished via delta-modeling such that a core PAAD is represented together with a set 
+of deltas adding, removing, or modifying vertices and edges (compositional representation). A variant can be obtained 
+by applying such deltas and then the previous variability-free analysis can be applied. Alternatively, variability 
+encoding of deltas transforms the compositional model into a 150\% model (annotative representation), which subsumes every concrete variant of the family, consisting of all nodes and transitions that are 
+added or modified by some delta.
+This model undergoes variability-aware analysis, whereby a parametric\footnotemark{} system of ordinary differential equations 
+is solved, giving rise to an algebraic expression.
+Such expression is then evaluated for each possible configuration, yielding a family-product-based analysis.
+Similar to Classen et al. for model checking, Kowal et al. have not explored compositional (feature-based) reasoning.
+\footnotetext{All elements that are added to, removed from, or modified in the 150\% model are represented by parameters.}
+
+\begin{figure}[!htbp]
+	\centering
+    %\resizebox{\textwidth}{!}{%
+        \includegraphics{figures/instances/performance.tikz}
+    %}
+	\caption{Framework description of the work by \citet{kowal_scaling_2015} (\Cref{sec:instance-performance})}
+	\label{fig:instance-performance}
+\end{figure}
+
+%The work of Kowal et al.~\cite{kowal_scaling_2015} presents a formalism to describe performance models of product lines based on performance-annotated activity diagrams (PAAD) described in a delta-oriented language.  The semantics of their models is expressed by continuous-time Markov chains (CTMC), which are more appropriate to performance analysis than DTMCs. They perform family-product based throughput analysis of a model derived from the delta modules.  Accordingly, they first apply variability encoding to delta PAAD deltas to obtain a 150\%model (annotative representation). Next, they analyze this model by means of symbolic linear equation solving, and then perform expression evaluation. 
+
+
+
+
+%To provide evidence of the framework's generality, we show in Table~\ref{fig:inst}
+%how its elements, previously listed in Table~\ref{table:analysis-abstraction-framework} and within the structure of the generic diagram in Figure~\ref{fig:strategies-generic}, can be instantiated for different properties and existing analyses. Each column in Table~\ref{fig:inst} describes a group of analysis strategies 
+%for some model and property. The first column refers to framework's elements, whereas the remaining columns 
+%correspond to analysis strategies proposed elsewhere, which we briefly describe next. In every cell from the second column onwards, we refer to the instantiation of the framework's elements in each work by mentioning the corresponding concrete concepts 
+%therein together with definition numbers when available.
+
+
+\subsubsection{Security Analysis}
+\label{sec:instance-security}
+
+\citet{securityGPCE18} contribute SecPL, a method for managing security requirements systematically in an SPL, promoting model-based security analysis. SecPL extends UML's security profile UMLsec supporting the specification of security requirements and annotative variability in UML models with presence conditions. Users leverage UMLsec stereotypes for encoding security specifications as OCL constraints. Such specifications can be done manually  or automatically mined from annotated source code. The authors rely on \textit{template interpretation}~\citep{templateInterpretation} to perform a family-based approach, lifting checks such as secure dependencies from the level of individual products to the entire SPL. Accordingly, OCL constraints comprising the security property specification are analyzed on the annotative UML model, resulting in a feature expression, which is checked for satisfiability. If the formula is satisfiable, the feature set generates an unsafe product. Otherwise, one has a proof that each product satisfies the specified security properties.
+
+\begin{figure}[!htbp]
+	\centering
+    %\resizebox{\textwidth}{!}{%
+        \includegraphics{figures/instances/security.tikz}
+    %}
+	\caption{Framework description of the work by \citet{securityGPCE18} (\Cref{sec:instance-security})}
+	\label{fig:instance-security}
+\end{figure}
+
+\subsubsection{Data-flow Analysis}
+\label{sec:instance-spllift}
+
+The generalization of the structure of our diagram is  not limited to the verification of 
+probabilistic and non-probabilistic behavioral properties. Consider, e.g., the variability-aware static analysis method proposed by~\citet{SPLLift}. Their method, named SPL$^{LIFT}$, seamlessly 
+lifts inter-procedural data-flow analysis to product lines. To that end, they annotate an inter-procedural control-flow graph with a feature or its negation, to represent the cases where the feature is enabled or not, 
+respectively. The variability-aware analysis then maps features expressions describing the configuration space of the annotated control-flow graph to corresponding data-flow facts.
+%This leads to parametric data-flow functions which can be composed to represent the flow of 
+%all the product-line products in a concise representation. 
+This representation is similar to the annotative FTS 
+models introduced by \citet{Classen2013} for behavioral model checking. 
+The generalization of the structure of the diagram is therefore also similar: from the annotated inter-procedural control-flow graph, 
+one can perform a family-based analysis and find the set of products leading to a violation. 
+This set can be compactly encoded as a constraint over the features, which is equivalent to a feature 
+expression. As \citet{Classen2013} for model checking, \citet{SPLLift} have not explored compositional 
+(feature-based) reasoning.
+
+\begin{figure}[!htbp]
+	\centering
+    %\resizebox{\textwidth}{!}{%
+        \includegraphics{figures/instances/spllift.tikz}
+    %}
+	\caption{Framework description of the work by \citet{SPLLift} (\Cref{sec:instance-spllift})}
+	\label{fig:instance-spllift}
+\end{figure}
+
+%\begin{landscape}
+%	\begin{table}[htb]
+%		\centering
+%		
+%		\caption{Generality of the analysis framework}
+%		\resizebox{\columnwidth}{!}{
+%			\begin{tabular}{llllll}
+%				\toprule
+%				
+%\textbf{Framework element} & \textbf{\citet{ApelSimulator}} & \textbf{\citet{DOPTheo}}  & %\textbf{\citet{kowal_scaling_2015}} & \textbf{\citet{SPLLift}} & \textbf{\citet{securityGPCE18}}  \\\midrule
+%Property & Safety & Functional program properties & Throughput  & inter-procedural static analyses & Security\\
+%Product & Java and C code & Abstract Behavioral Specification & PAAD (Def. 1) & Control-flow graph & UMLSec \\
+%Compositional Product Line & Feature modules & ABS core and deltas & PAAD and PAAD deltas (Def. 5) & -- & -- \\    
+%Annotative Product Line & \textit{if} statements & -- & 150\% model (Def. 7) & Annotated flow functions & SecPL\\
+%Compositional expressions & -- & -- & -- & -- & -- \\    
+%Annotative expression & Feature expression & -- &  Parametric traffic equation & Feature expression & Feature expression \\    
+%Compositional lifted expression & -- & -- & -- & -- & --\\    
+%Annotative lifted expression & Lifted feature expression & -- & -- & Lifted feature expressions & --\\    
+%Property ADD & BDD & -- & -- & BDD & -- \\    
+%Projection  & -- & -- & Projection (Def. 8) & Propagation & Projection \\    
+%Composition & Superimposition & Delta application & PAAD delta application (Def. 6) & -- & -- \\     
+%Analysis  & Model checking & Theorem proving & Traffic equation solving (Def. 4) & IFDS analysis & OCL check \\     
+%Variability-aware analysis & Model checking & Theorem Proving &  Parametric traffic equation solving & IFDS/IDE analysis & template interpretation+SAT \\     
+%Evaluation & -- & -- & Expression evaluation & -- & Expression evaluation \\     
+%Evaluation with ADDs  & BDD evaluation & --  & -- & BDD evaluation & --  \\     
+%\textit{lift} & \textit{lift} & -- & -- & \textit{lift} & -- \\     
+%Variability encoding & Variability encoding & -- & Variability encoding & -- & --\\     
+%ADD application & BDD application & -- & -- & BDD application & --\\ 
+				
+%				\bottomrule
+%			\end{tabular}
+%		}
+%		\label{fig:inst}
+%	\end{table}
+%\end{landscape}
+
+
+
+\subsubsection{Functional Program Properties Analysis}
+\label{sec:instance-delta-liskov}
+
+\citet{DOPTheo} present a feature-family-based analysis strategy for product lines based on Delta Oriented 
+Programming (DOP) to analyze functional program properties expressed as contracts and invariants. Programs are expressed as a core and a number of delta modules that add, remove, or modify methods, 
+fields, and contracts. To guarantee uniqueness of variant derivation for a given set of deltas, it is assumed that 
+a partial order exists between the deltas. Program derivation proceeds by composing the core with a sequence of deltas. 
+
+The analysis proposed by \citet{DOPTheo} relies on an extended Liskov principle for DOP, whereby the method contracts of subsequent deltas 
+must become more specific; invariants cannot be removed, but only added; methods called in deltas use the 
+contract of the first implementation of that method.
+Leveraging such constraints, the core and each delta are analyzed in isolation 
+with respect to method preconditions and postconditions (feature-based phase).
+After that, the global program invariants in the core and deltas are combined and
+checked (family-based phase), considering that method contracts are the ones
+computed in the previous step.
+
+The resulting process can be seen as a feature-family-based verification
+approach for delta-oriented product lines~\cite{Thum2014}.
+However, the analysis technique proposed by \citet{DOPTheo} results in a yes/no
+answer to the question of whether all possible applications of deltas yield
+products that satisfy their corresponding specifications.
+This means that intermediate results can neither be represented as expressions nor
+lifted to ADD semantics.
+Hence, that approach cannot be described by our proposed framework.
+
+
+
+
+\subsection{Higher-level Abstractions}
+
+\label{framework:discussion}
+
+In addition to the generality discussed in the previous section, our framework also has higher-level abstractions comprising a number of its elements. Identifying these abstractions  contributes to improving a principled understanding of product-line analyses. These abstractions are the following:
+
+\begin{itemize}
+
+    \item \textbf{\textit{Inwards}---Variability binding}: From  either side of Figure~\ref{fig:strategies-generic} to its center, there is variability restriction, which binds the variability according to a configuration. Such step is performed at different types (models and expressions) and granularity levels (annotative and compositional models and expressions).	
+    For example, $\pi'$ binds variability in compositional models, whereas $\pi$ binds variability in annotative models.
+
+	\item \textbf{\textit{Left side}---Component functor}: Within the leftmost models in Figure~\ref{fig:strategies-generic}, there is a functor (a structure that can be mapped over) capturing the structure of the compositional model across compositional expressions and lifted compositional expressions (cf. dotted arrows in Figure~\ref{fig:functor}). The $\mathit{fmap}$ function maps the variability-aware analysis function $\hat{\alpha}$ over this structure of compositional model 
+	(cf. edge labeled $\mathit{fmap(\hat{\alpha})}$ in \Cref{fig:strategies-generic} and first large horizontal arrow in Figure~\ref{fig:functor}), yielding a corresponding compositional expression. A further call to \textit{fmap} maps the \textit{lift} function over this expression ($\mathit{fmap(lift)}$), resulting in a lifted compositional expression. 
+	
+	
+	\item \textbf{\textit{Left side}---Folding functor with partial composition}:
+	Additionally, from the left-hand side to the center, the variability binding step is performed within a folding operation over an ordering of the component functor structure to obtain a product ($\pi'$) or a property value 
+	($\sigma$ and $\hat{\sigma}$). The folding implies the existence of both \pvscode{partialModelComposition} and \pvscode{partialExpComposition}, which bind the composition mechanism for \pvscode{AnnotativeModel} and \pvscode{AnnotativeExpression}, respectively. 
+	%Further, annotative models and expressions are homomorphic via the $\mathit{\hat{\alpha}}$. This encodes the compositional assumption on the analysis.
+	%The folding implies the existence of an associative composition operation on annotative models and expressions as well as the existence of an identity element. Therefore, annotative models and expressions  are \textit{monoids}. 
+	%Further, these monoids are homomorphic via the $\mathit{\hat{\alpha}}$. This encodes the compositional assumption on the analysis.
+	
+		%	\item \textbf{Variability- and non-variability aware analyses}: If we assume that the \textit{Annotative Model} is hierarchical (or perhaps by a weaker restriction, that the model's elements are related via a well-founded relation), then we could relate such analyses in a more explicit way: the variability-aware analysis amounts to following the hierarchical structure and at each level applying the non-variability aware analysis in the common fragment of the model at that level in the hierarchy while evaluating the resulting expression with the recursive application on the variant branches;
+	%	
+	\item \textbf{\textit{Lower quadrants}---Lifting to ADDs}: Both lower quadrants of the diagram in Figure~\ref{fig:strategies-generic} illustrate a general principle for lifting analyses to product lines using ADDs: the intermediate analysis results represented by either compositional or annotative expressions are encoded using ADD operations for concise representation and obviating from enumeration during algebraic manipulation and evaluation. Further details can be checked elsewhere~\cite{Castro2017}.
+\end{itemize}
+
+
+\begin{figure}[htb]
+	\centering
+    \resizebox{\textwidth}{!}{%
+        \includegraphics{figures/component-functor.tikz}
+    }
+	\caption{Component Functor, allowing structure-preserving transformations}
+	\label{fig:functor}
+\end{figure}
+
+Regarding generality (cf. Section~\ref{sec:frameworkInstances}), we note that product-line analyses for both functional and non-functional properties can be described. In general, depending on 
+the property and model, the total number of possible analysis strategies may change. Although for reliability~\citet{Castro2017} formalize seven analyses, this does not necessarily hold for all other properties, since some of these  may not be
+amenable to compositional reasoning (e.g., performance). 
+%Indeed, the diagram itself is \textit{configurable}. 
+Additionally, in principle, new analyses can also be conceived based on the original diagram. 
+For instance, the performance analysis by \citet{kowal_scaling_2015} results in algebraic expressions, which, in principle, could be subject to lifting and ADD-based evaluation.
+New analyses could also arise for other models and properties. As another example, the behavioral analyses described in \Cref{fig:diagram-FTS} could be extended along the compositional dimension of the framework.
+
+At a finer grain, the extent to which our framework supports reuse depends on the property and on the model at hand. For instance, for reachability properties, the same model (PMC) for reliability can be reused. By analyzing the source code of the ReAna tool~\cite{LANNA2017}, we note that it is possible to achieve high level of reuse of both conceptual and implementation aspects. Similar considerations apply for other probabilistic properties. However, in other cases, the overall structure of the analyses could still be reused. For instance, in the product-based case, there is enumeration on products. In the family-based strategies, the common part of the model is explored until variation points branch out the analysis. In feature-based analysis, each model fragment related to a feature is analyzed. This overall control can be abstracted and shared across different properties and models thus helping the development of new analysis strategies.
+
+Accordingly, the formalization carried out in Section~\ref{sec:abstraction-description} supports reuse by focusing on key abstractions and properties in this domain. 
+In terms of abstractions, reuse follows from types and functions defined directly or indirectly in terms of the framework's core concepts, i.e, the property, the model, and the corresponding non-variability-aware analysis.
+%In particular, this amounts to five types and four functions defined from the three parameters, plus three types and four functions reused across all analysis (lower quadrants).  
+Regarding properties, the framework  also supports reuse of commutative properties, which are essential for the soundness of product line analysis strategies, but are usually a non-trivial and scarce effort across independently developed analyses. As discussed in Section~\ref{sec:abstraction-description}, proofs of commutative properties of our framework are a high-level structure that is completely reused under different interpretations for different models and  related properties. Moreover, proof reuse is also possible within the framework: the proof of the commutativity of Figure~\ref{fig:strategies-generic}'s  upper-left quadrant  reuses the proof of its upper-right quadrant's  commutativity. Essentially, this means that the soundness of compositional analyses, which are coarse-grained, rely on the soundness of standard analyses, which are finer-grained and non-necessarily compositional. Nevertheless,  the commutativity proof of Figure~\ref{fig:strategies-generic}'s  upper-left quadrant has the liability of an underlying proof obligation corresponding to~\Cref{axiom:compositionality-hat-alpha} %Axiom \lstinline[mathescape=true]{hatAlphaCompositionality} 
+in Section~\ref{sec:abstraction-description} requiring basic compositional behavior of the model and its partial composition, which is model dependent. This way, by also explicitly stating the abstract requirements that a model and related transformations must satisfy, the framework supports reuse.
+
+Finally, although the commutative diagram in Figure~\ref{fig:strategies-generic} shows logically equivalent analyses for a given model and property, the diagram
+does not convey practical considerations in terms of efficiency. For instance,  
+for the feature-product-based analysis to be efficient, it is necessary that recursive composition of expressions is less complex than building the whole product~\cite{Ghezzi2013}. Otherwise, the product-based analysis is preferable. 
+In general, such considerations may also depend on modeling pragmatics and could be used to define modeling styles and 
+corresponding bad smells.
+Furthermore, for a given property and model, the alternative strategies have differing complexity costs, which could 
+annotate the diagram, yielding another dimension. A still open question is whether these costs can be reused across 
+properties or models~\cite{LANNA2017,StaticAnalysisInPractice,TypeCheckingComparison,SamplingStrategies}.
+
+
+
+\subsection{Threats to Validity}
+   \label{sec:threatsToValidity}
+Our formal framework was inductively built from different product-line analysis
+strategies (cf. \Cref{sec:strategies}) and is based on the taxonomy proposed by
+\citet{Thum2014} and on the product-line representation by \citet{Kastner2008}, which have been used to describe and analyze a plethora of product lines~\cite{Thum2014}.
+Nonetheless, the analysis strategies we considered in \Cref{sec:strategies}  operate over transition-system models (either
+DTMC~\cite{LANNA2017,Castro2017} or FTS~\cite{Classen2013,Classen2014}), which brings
+the risk of overfitting.
+To mitigate that risk, we qualitatively assessed the framework under additional
+strategies, operating over transition systems (CTMC~\cite{kowal_scaling_2015}), source
+code~\cite{ApelSimulator,SPLLift}, UML models~\cite{securityGPCE18}, and formal
+artifacts~\cite{DOPTheo}.
+We argue that such variety of analyzed models is a representative sample from the
+universe of product-line analysis techniques surveyed by \citet{Thum2014}.
+Moreover, a recent survey on the state-of-practice of
+variability-aware static analyses in different application domains
+\cite{IndustrialAnalysisSurvey} found that reliability,
+correctness, and performance are critical properties of interest.
+
+Furthermore, considering the generality assessment  in Section~\ref{sec:frameworkInstances}, we see that the
+lower quadrants of our commuting diagram are somewhat misrepresented in the
+qualitative assessment.
+This raises the question of whether lifting to ADDs can actually be generalized to
+other analyses.
+Indeed, the proposition of ADD lifting as a technique to cope with product-line
+analysis is recent~\cite{LANNA2017}, so there are still no additional empirical
+studies that employ it.
+Nonetheless, we have analytical evidence that such technique can be employed to
+analyze any propoerty that can be expressed as an algebraic
+expression~\cite{Castro2017}.
+
+Besides human scrutiny, we further increase the evidence on the soundness of our
+commutativity framework by means of machine-based verification.
+To address the validity of the mapping between framework concepts and formal
+definitions, we created our mechanized theory by modeling the constructs
+that exist in the formal theory of commuting product-line reliability analysis
+strategies~\cite{Castro2017}.
+However, it is future work to assess the extent to which one can devise mechanized
+theories of concrete analysis strategies by instantiating our generic PVS theory.

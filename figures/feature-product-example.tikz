@@ -1,0 +1,111 @@
+\begin{tikzpicture}[node distance=20pt and 20pt,
+	align=center,
+	text centered]%, on grid]
+	\scriptsize
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Main
+%%%%%%%%
+    \node [Initial] (t0) {$s_0$};
+    \node [draw, circle, right= of t0] (t2) {$s_1$};
+    
+    \node [InitialSlot, right= of t2] (tl0) {$s_2$};
+    \node [SuccessSlot, right= of tl0] (tlsuc) {$s_3$};
+    \node [ErrorSlot, below= of tlsuc] (tlerr) {$s_4$};
+
+    \node [Success, right= of tlsuc] (tsuc) {$s_{\mathit{suc}}$};
+    \node [Error, below= 20pt of tsuc] (terr) {$s_{\mathit{err}}$};
+    
+    \draw[->] (tl0) to node [midway, above] {$x$} (tlsuc);
+    \draw[->] (tl0) to [bend right=25] node [near start, right] {$1-x$} (tlerr);
+    
+    \draw[->] (t0) to node [midway, above] {$0.9$} (t2);
+    \draw[->] (t0) to [bend right=35] node [near start, above] {$0.1$} (terr);
+    \draw[->] (t2) to node [midway, above] {$0.9$} (tl0);
+    \draw[->] (t2) to [bend right=35] node [near start, above] {$0.1$} (terr);
+    \draw[->] (tlsuc) to node [midway, above] {$0.9$} (tsuc);
+    \draw[->] (tlerr) to [bend right=15] node [near start, above] {$1$} (terr);
+    
+    \draw[->] (tsuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (ssuclab) {$1$} (tsuc);
+    \draw[->] (terr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (serrlab) {$1$} (terr);
+
+    \node [SlotBox=\texttt{Feature}, fit=(tl0)(tlsuc)(tlerr)] (slot) {};
+
+    \node [fit=(t0)(tsuc)(terr)] (basePMC) {};
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% F_x
+%%%%%%%%
+    \node [Initial, below left=70pt and 15pt of t0] (ttl0) {$t_0$};
+    \node [draw, ellipse, right= of ttl0] (ttl1) {$t_1$};
+    \node [Success, right= of ttl1] (ttlsuc) {$t_\mathit{suc}$};
+    \node [Error, below= of ttlsuc] (ttlerr) {$t_\mathit{err}$};
+    
+    \draw[->] (ttl0) to node [midway, above] {$0.9$} (ttl1);
+    \draw[->] (ttl1) to node [midway, above] {$0.9$} (ttlsuc);
+    \draw[->] (ttl0) to [bend right=25] node [near start, right] {$0.1$} (ttlerr);
+    \draw[->] (ttl1) to [bend right=25] node [near start, right] {$0.1$} (ttlerr);
+    
+    \draw[->] (ttlsuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (ssuclab) {$1$} (ttlsuc);
+    \draw[->] (ttlerr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (serrlab) {$1$} (ttlerr);
+    
+    \node [draw=none, rectangle, fit=(ttl0)(ttlsuc)(ttlerr)] (iface) {};
+    
+    \draw[HlEdge, dashed] (slot) to node [midway, left] {depends} (iface);
+    \node [draw=none, rectangle, fit=(ttl0)(tsuc)(iface)] (compmodel) {};
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Composed
+%%%%%%%%
+    \node [right= 50pt of compmodel] (dtmcreference) {};
+    \node [Initial, above= of dtmcreference] (ct0) {$s_0$};
+    \node [draw, circle, right= of ct0] (ct2) {$s_1$};
+    
+    \node [InitialSlot, right= of ct2] (ctl0) {$t_0$};
+    \node [draw, circle, right= of ctl0] (ctl1) {$t_1$};
+    \node [SuccessSlot, right= of ctl1] (ctlsuc) {$t_\mathit{suc}$};
+    \node [ErrorSlot, below= of ctlsuc] (ctlerr) {$t_\mathit{err}$};
+
+    \node [Success, right= of ctlsuc] (ctsuc) {$s_{\mathit{suc}}$};
+    \node [Error, below= 20pt of ctsuc] (cterr) {$s_{\mathit{err}}$};
+    
+    \draw[->] (ctl0) to node [midway, above] {$0.9$} (ctl1);
+    \draw[->] (ctl1) to node [midway, above] {$0.9$} (ctlsuc);
+    \draw[->] (ctl0) to [bend right=25] node [near start, right] {$0.1$} (ctlerr);
+    \draw[->] (ctl1) to [bend right=25] node [near start, right] {$0.1$} (ctlerr);
+    
+    \draw[->] (ct0) to node [midway, above] {$0.9$} (ct2);
+    \draw[->] (ct0) to [bend right=35] node [near start, above] {$0.1$} (cterr);
+    \draw[->] (ct2) to node [midway, above] {$0.9$} (ctl0);
+    \draw[->] (ct2) to [bend right=35] node [near start, above] {$0.1$} (cterr);
+    \draw[->] (ctlsuc) to node [midway, above] {$0.9$} (ctsuc);
+    \draw[->] (ctlerr) to [bend right=15] node [near start, above] {$1$} (cterr);
+
+    \draw[->] (ctsuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (ssuclab) {$1$} (ctsuc);
+    \draw[->] (cterr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (serrlab) {$1$} (cterr);
+
+    \node [SlotBox=\texttt{Feature}, fit=(ctl0)(ctlsuc)(ctlerr)] {};
+
+	\node [draw=none, rectangle, fit=(ct0) (ctsuc) (cterr) (dtmcreference)] (dtmc) {};
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Expressions
+%%%%%%%%
+    \normalsize
+    \node [below= 40pt of compmodel] (exprreference) {};
+    \node [right= 10pt of exprreference] (baseexpr) {$0.729\cdot x$};
+    \node [below left= 20pt and 15pt of baseexpr] (depexpr) {$0.81$};
+	\node [draw=none, rectangle, fit=(exprreference) (baseexpr) (depexpr)] (expr) {};
+	
+	\scriptsize
+    \draw[HlEdge, dashed] (baseexpr) to node [midway, left] {depends} (depexpr);
+    
+    \normalsize
+    \node at (dtmc|-expr) (reliability) {$0.59049$};
+
+	\draw[product] (compmodel) to node [midway, above] {$\pi'$} (dtmcreference);
+	\draw[family] (compmodel) to node [midway, left] {$\mathit{fmap}(\hat{\alpha})$} (exprreference);
+	\draw[product] (dtmc) to node [midway, right] {$\alpha$} (reliability);
+	\draw[product] (expr) to node[midway, below] {$\sigma$} (reliability);
+\end{tikzpicture}

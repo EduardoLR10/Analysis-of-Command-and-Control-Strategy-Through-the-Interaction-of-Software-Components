@@ -1,0 +1,680 @@
+%The current state of research should first be briefly described and demonstrated through
+%approximately five key publications. (no more than 1 page)
+%
+%The most important content is the clear description of the research questions to be examined in 	your intended research,
+%their originality and significance for the advancement of the research field. (approx. 2 pages)
+%
+%Furthermore, the academic methods to be used to achieve these goals should be clearly described. (approx. 2 pages)
+
+
+
+%\documentclass{article}
+%\usepackage[english,brazil]{babel}
+%
+%\usepackage[T1]{fontenc} % Acentos no output
+%\usepackage[utf8]{inputenc} % Acentos no input
+%
+%\usepackage{natbib}
+%
+%\usepackage{graphicx}   % need for figures
+%\usepackage{adjustbox}  % scale table
+%
+%\usepackage{setspace}%%% use este pacote para setar o espaço entre
+%%%% linhas do seu documento. Esse recurso facilita a correção de
+%%%% rascunhos por parte do seu orientador e dos membros da banca.
+%
+%\usepackage[pagebackref=true, pdfpagelabels]{hyperref}   % links
+%
+%
+%%\orientador{\prof \dr Vander Ramos Alves}{CIC/UnB}
+%%\diamesano{28}{agosto}{2015}
+%
+%\author{Vander Ramos Alves}
+%\title{A Product Line of Software Product Line Analysis Techniques}
+%
+%%\palavraschaves{Linha de Produtos de Software, Análise de Linha de Produtos, Verificação Formal}
+%
+%%\keywords{Software Product Line, Product Line Analysis, Formal Verification}
+%
+%\begin{document}
+%\selectlanguage{english}
+%\pagenumbering{roman}
+%
+%\maketitle
+%\newpage
+%%\capa
+%%\sumario
+%
+%%\doublespacing % Sets double-spacing between lines. Makes it easier to review.
+%
+%\selectlanguage{english}
+%
+%
+%\selectlanguage{english}
+%
+%\pagenumbering{arabic}
+
+\section{Introduction}
+\label{sec:introduction}
+
+% Context
+Software Product Line Engineering (SPLE) is a means to systematically
+manage variability and commonality in software systems, enabling automated
+synthesis of similar programs from a set of reusable assets
+\citep{ClementsSPL2001, PohlSPLE, FOSPL}.
+This methodology allows improving productivity and time-to-market, as well as
+achieving mass customization of software \citep{PohlSPLE}.
+
+% Problem
+However, for a product line with high variability, combinatorial explosion may
+cause the number of possibly generated products to be very large. Because of
+this phenomenon, it is often infeasible to quality-check each of these
+products.
+Nonetheless, software verification techniques for the single-product case
+are widely used by the industry, and it is beneficial to exploit their
+maturity in order to increase reliability while reducing cost and risk.
+
+There are a number of approaches to \emph{product line analysis} that adapt those
+standard techniques, according to a recent survey by \cite{Thum2014}.
+Although they are different to some extent, they share features which suggest
+there is a yet unexplored potential for reuse.
+% Relevance
+Different analyses based on similar techniques represent redundancy in both
+implementation and verification efforts.
+%As examples of identified redundancies,
+We can note unexplored similarities between a number of analysis methods proposed so far:
+
+
+    \textbf{Similar models}. \cite{kowal_scaling_2015} propose a method that takes UML activity diagrams
+        annotated with performance as input in order to evaluate performance
+        of the overall product line.
+        In contrast, \cite{Ghezzi2013} use UML sequence diagrams annotated
+        with reliability and energy consumption values.
+        As both take UML behavioral models as input and verify
+        stochastic properties, there is an opportunity for investigating
+        reuse, even though they employ different variability handling
+        techniques.
+
+    \textbf{Similar variability handling}. \cite{Hahnle2012} devised a theoretical framework for verification
+        of design-by-contract properties in Java programs with variability
+        handled by Delta-Oriented Programming (DOP).
+        \cite{Thum2013} check the same properties for Java source code, but
+        using Feature-Oriented Programming (FOP) as the composition mechanism.
+        Although DOP is classified by \cite{DOPTransformational} as a
+        transformational mechanism, according to \cite{Schaefer2010} it can
+        be seen as an extension of FOP.
+        Nevertheless the proposed analysis techniques do not explicitly share
+        formalization.
+
+    \textbf{Similar strategies}. \cite{kowal_scaling_2015} employ a family-based strategy for building a
+        single stochastic model which encodes all variability in the product
+        line, and thus can be analyzed in a single run.
+        \cite{ApelSimulator} adopt the same strategy for generating source code
+        of a program which encodes all variability in the product line as
+        runtime variability, so that off-the-shelf software model checkers
+        can be applied.
+        Although the models and properties verified are different, there
+        seems to be a pattern of encoding all variability in a single
+        product --- which \cite{ApelSimulator} call a simulator. This
+        pattern, in turn, must have an underlying principle governing its
+        application and validity.
+
+
+%
+%% Solution
+%Thus, we propose to apply SPL techniques to building a framework for
+%product line analyses.
+%% Evaluation
+%This product line of SPL analysis techniques will be evaluated with respect
+%to reuse and implementation effort,
+%% Contributions
+%by which we expect to gather information regarding commonality and variability
+%in this domain. We also expect to gain insight on the underlying principles
+%supporting the correctness of each of the implemented methods.
+%
+
+%The most important content is the clear description of the research questions to be examined in your intended research,
+%their originality and significance for the advancement of the research field. (approx. 2 pages)
+
+%\section{Problem Statement}
+%\label{sec:problem}
+
+The separate devising of analysis methods for software product lines yields
+unrelated tools, even if they, for instance, take similar models as input or perform
+computations over the same data structures. This can lead to redundant
+implementations and even to repetition in correctness proofs.
+Moreover, should one have the need of applying such similar analyses
+implemented by different tools, a number of analysis tasks---that are
+inherently time consuming, error-prone, and require specialized knowledge to perform---would
+inevitably be repeated.
+
+This repetition is a natural outcome of the research activity, given that
+there are independent groups exploring similar issues. Nonetheless,
+practitioners and researchers alike benefit from having an integrated
+body of knowledge. Because of this, it is useful to periodically synthesize
+existing work in a given field periodically.
+Indeed, \citeauthor{Thum2014}'s survey \citep{Thum2014} is an important step
+in this direction, which could be seen as a coarse-grained domain analysis.
+However, more refinement is necessary to further explore similarities and
+suitably manage variabilities among these approaches at the technical and theoretical level, thus providing
+practitioners and researchers with more efficient techniques and theoretical framework for further investigation.
+
+Furthermore, there is no guidance on whether analysis strategies can be
+arbitrarily chosen for a given product line and analysis technique.
+\cite{Thum2014} state that the existence of a principle and possibly
+automated way to lift a given specification and analysis technique to product
+lines is an open research question. Accordingly, \cite{Midtgaard2015} proposed
+an approach to perform such lifting in the context of static analyses,
+reaching a mathematical formalism that justifies correctness of family-based
+analyses from correctness of product-based ones by construction. Nonetheless,
+it does not investigate feature-based strategies or other analysis types (e.g.,
+model checking).
+
+
+Therefore, to explore these issues further, this research proposal poses the following research questions:
+
+\begin{enumerate}
+  \item  What are the commonalities and variabilities of the implementation and correctness proofs of product line analysis strategies ?
+  \item  How can such commonalities be reused and the variabilities managed systematically?
+  \item  What is the cost of reusing such commonality and managing the variabilities systematically?
+  \item  What is a possible theory of product line analysis strategies ?
+\end{enumerate}
+
+These questions have not been fully explored yet. Indeed, works by \cite{Thum2014} address the issue preliminarily only at the domain level, and \cite{Midtgaard2015} relate product and family analyses only (without addressing the feature dimension). So, answering Question 1 will contribute a more comprehensive and deeper understanding of product line analyses at the implementation and at the theoretical level by considering feature-, family-, and product-based dimensions and their combinations, such as feature-product and feature-family. The analyses addressed will involve properties such as reliability, safety, and performance, which are relevant in safety-critical systems.
+Moreover, we expect to gain insight on the underlying principles used in these techniques, which we envision could help other researchers lift existing single-product analysis techniques to yet under-explored variability-aware approaches.
+
+%significance for the advancement of the research field
+Next, Question 2 will focus on the elicitation and use of mechanisms needed to enable such reuse and systematic variability management.  The significance for the advancement of the research field is that this will contribute in a practical vein for other interested researchers in doing product line analyses, providing them with both reusable implementation artifacts as well as with the guarantee that the reusable analysis infrastructure is sound. This way, derivation of new analyses will be more efficient and reliable when compared to the current independent development of the field.
+
+Question 3 then expands on Question 2 by considering the incurred effort in identifying, reusing, and systematically exploring variability of  implementation and correctness proofs of product line analysis strategies. Although the research community has explored similar issues at the implementation level, there is still a lack of systematic investigation at the theoretical level regarding correctness proofs in terms of reuse gain for product line analysis. A preliminary investigation of reuse gain in a product line of theories has been performed~\cite{Teixeira2015}, but it focuses on product line refinement and not on analysis. Therefore, the significance of Question 3 for the advancement of the research field is that a quantifiable measure, both analytically and in metrics, will be provided to assess the cost of the reuse effort, so that interested users can plan accordingly.
+
+Finally, exploring Question 4 will further contribute for the advancement of the research field by offering a common conceptual framework that allows the organization and structuring of facts and knowledge in a concise and precise manner, thus further facilitating the communication of ideas and knowledge. Indeed, theory is the means through which one may generalize analytically, which SPLE is still needing. Correspondingly, the contribution at the theoretical level is expected to identify essential constructs, propositions, scope, and actors relevant to product line analysis, which will contribute to enhancing the understanding of the fundamental principles behind this topic.
+
+
+
+
+%Furthermore, the academic methods to be used to achieve these goals should be clearly described. (approx. 2 pages)
+\section{Research Method}
+\label{sec:methodology}
+
+As the aforementioned issues apparently amount to redundant implementation and verification effort, we propose to apply SPLE techniques in designing a product line of tools for software product line analysis and of correctness proofs of the corresponding techniques.
+
+A preliminary design of this product line of tools and correctness proofs will include the following elements: feature model, asset base, and configuration. 
+The first indicates the configurability of the product line and will could comprise variability management techniques, analysis strategies, and input
+models as features. The constraints in the feature model would then encode the
+relationship between these elements. 
+
+The asset base will be composed of two kinds of artifacts. First, modular source code implementing the behavior corresponding to each feature (e.g., analysis strategies and techniques). The variability handling technique used in this implementation assets is yet to be discussed and will depend on the scattering of feature behavior. Second, there will be formal assets representing theories and correctness proofs regarding the supported analysis methods. These will be preferably expressed in the language of a proof assistant such as PVS~\citep{PVS:language}. Lastly, the configuration knowledge will rely on both compositional and annotative styles, depending on the granularity of the variability.
+
+From a practical perspective, we expect to provide preliminary tool support for efficiently performing different types of analyses in product lines. This would comprise software artifacts implementing different verification methods, as well as theories formalizing the common and variable parts of the corresponding correctness proofs. 
+
+The main goal is to investigate whether there is computational and maintenance gain in performing such abstraction, i.e., if the attained reuse is justifiable. \cite{PLAModel} claim all product line analyses proposed so far can be described by four composable operators (representing variability encoding, partial variability resolution, feature composition and processing
+of assets), which suggests this might be true. 
+
+Furthermore, we want to explore the feasibility of reusing proof steps for demonstrating correctness in this context, and to what extent this
+is possible. For instance, the formal results on product line refinement by \cite{Teixeira2015} could be investigated as a means to justify the lifting
+of product-based to family-based approaches by exploiting mutual refinement. Moreover, a theory of product line analysis will be proposed to further abstract and generalize the underlying concepts. A possible abstraction strategy will rely on Category Theory.
+
+Accordingly, the proposed research is synthesized in Figure~\ref{fig:method}  and  comprises the following steps:
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/research-method}
+	\caption{}
+	\label{fig:method}
+\end{figure}
+
+
+
+
+\begin{enumerate}
+    \item
+        Perform a literature review on the domain of software product line
+        analyses, mainly focused on the works considered in the survey
+        performed by \cite{Thum2014}.
+
+    \item
+        Define scope limits for considered analyses, regarding their types
+        (e.g., model checking), properties analyzed (e.g., reliability, safety, performance) and
+        program life-cycle phase (e.g., run-time, compile-time).
+
+    \item
+        Perform a domain analysis of product line analysis techniques, identifying
+        variation points in the aforementioned tool. This step should produce
+        a \emph{degenerate} software product line composed of a single
+        analysis tool.
+
+    \item
+        Use a reactive approach to extend the single-product product line of analysis
+        tools by adding support to verification of different quality
+        properties and analysis strategies.
+
+    \item
+        Analyze the correctness proofs of the implemented techniques
+        in order to identify common steps, patterns, and underlying principles.
+
+%    \item
+%        Implement a tool to support the derivation of analysis techniques.
+%
+%    \item
+%        Evaluate the resulting product line using reuse and instantiation
+%        effort as metrics. The results will then be generalized and threats
+%        to validity will be discussed.
+%        
+%    \item Develop a theory of product line analysis.        
+    
+    \item Disseminate research results by submitting the work for publication at workshops, symposiums, conference and/or journals.
+\end{enumerate}
+
+
+%\section{Schedule}
+%\label{sec:schedule}
+%
+%Table~\ref{tab:schedule} outlines the schedule for the activities described in
+%Section~\ref{sec:methodology}. Columns indicates the months starting from the beginning of the project.
+%
+%\begin{table}[ht]
+%\caption{Schedule} % title of Table
+%\centering % used for centering table
+%
+%\adjustbox{width={\textwidth},totalheight={\textheight},keepaspectratio}{
+%\begin{tabular}{|l|*{12}{c|}} % 11 centered columns
+%    \hline
+%    Activity & 04/17 & 05/17 & 06/17 & 07/17 & 08/17 & 09/17 & 10/17 & 11/17 & 12/17 & 01/18 & 02/18 & 03/18 \\
+%    %heading
+%    \hline % inserts single horizontal line
+%    \hline % inserts single horizontal line
+%    Literature review       & X & X & X  &   &   &   &   &   &   &   &  & \\ \hline
+%    Scope definition        &   & X & X &   &   &   &   &   &   &   &  & \\ \hline
+%    Domain analysis         &   & X & X & X &   &   &   &   &   &   &  & \\ \hline
+%    Reactive approach       &   &   &   & X & X & X &  &  &   &   &  & \\ \hline
+%    Proof analysis          &   &   &   & X & X & X & X & X &   &   &  & \\ \hline
+%    Theory definition       &   &   &   &   &   &   & X & X & X &   &  & \\ \hline
+%    Tool implementation     &   &   &   &   &   &   &   & X & X & X & X &  \\ \hline
+%    Evaluation              &   &   &   &   &   &   &   &   & X & X & X & X \\ \hline
+%    Dissemination           &   &   &   &   & X  &  &   &   &   & X & X& X \\ \hline
+%    %Dissertation defense    &   &   &   &   &   &   &   &   &   &   & X& \\ \hline %inserts single line
+%\end{tabular}
+%}
+%\label{tab:schedule} % is used to refer this table in the text
+%\end{table}
+%
+%\appendix
+
+%\clearpage
+%\bibliography{qualifying}
+%\bibliographystyle{apalike}
+%
+%\end{document}
+
+
+
+%\section{Background}
+%\label{sec:background}
+%
+%In order to better understand the problem and the proposed solution, it is
+%useful to bear in mind concepts regarding Software Product Lines (Section
+%\ref{sec:spl}) and software analysis (Section \ref{sec:analysis}), both in
+%general and applied to SPL engineering. In what follows, we lay these
+%conceptual foundations for the proposed research.
+%
+%
+%\subsection{Software Product Lines}
+%\label{sec:spl}
+%
+%A Software Product Line (SPL) is a set of software-intensive systems that
+%share a common, managed set of features satisfying the specific needs of a
+%particular market segment or mission and that are developed from a common set
+%of core assets in a prescribed way \citep{ClementsSPL2001}.
+%Thus, SPLE can be seen as the set of processes and techniques used for
+%systematically managing these common features, which provides for improved
+%quality, mass customization capability and reduced costs and time to
+%market \citep{FOSPL}.
+%
+%The main concern in SPL engineering is managing variability, which is defined
+%by \cite{VanGurp2001} as the ability to change or customize a system. In order
+%to accomplish this, it is useful to abstract variability in terms of
+%\emph{features}. The concept of a feature encompasses both intentions of
+%stakeholders and implementation-level concerns and has been subject to a
+%number of definitions \citep{FOSPL}, but synthetically it can be seen as a
+%characteristic or end-user-visible behavior of a software system.
+%
+%Features are used in product-line engineering to specify and communicate
+%commonalities and differences of the products between stakeholders, as well as
+%to guide structure, reuse, and variation across all phases of the software
+%life cycle \citep{FOSPL}.
+%The features of a product line and their relationships are documented in a
+%\emph{feature model}, which can be graphically represented as a \emph{feature
+%diagram} and has its semantics defined by propositional logic. As an example,
+%one can state $f \rightarrow g$, meaning that whenever a product exhibits
+%feature $f$ it must also provide feature $g$.
+%
+%A given software system in a product line is referred to as a \emph{product}
+%and corresponds to a \emph{configuration}, i.e., a selection of features
+%respecting the constraints established by the feature model.
+%A product comprises a set of assets (e.g., source code files, test cases,
+%documentation) which are derived from a common set known as the
+%\emph{asset base}.
+%The mapping between a given configuration and the assets which compose the
+%corresponding product is called \emph{configuration knowledge}
+%\citep{CzarneckiGP2000}.
+%
+%Given a configuration, an asset base and a configuration knowledge, the
+%process by which a product is built is called \emph{product derivation}
+%\citep{FOSPL}.
+%Mass customization is achieved by automating this process.
+%
+
+%\subsubsection{SPL Refinement Theory}
+%
+%More formally, \cite{BorbaPLRefinement} define a product line as a tuple
+%$(F, A, K)$, where $F$ is a feature model, $K$ is a configuration knowledge
+%(CK) and $A$ is an asset mapping (AM) --- an extra level of indirection which
+%provides for unambiguous identification of assets in the asset base,
+%independently of file or class names.
+%
+%The possible configurations are given by $[\![F]\!]$, where
+%$$[\![\_]\!]: FeatureModel \to \mathcal{P}[Configuration]$$
+%is the semantics function of a feature model, which yields a (possibly
+%infinite) set of \emph{valid} configurations (i.e., sets of features which
+%satisfy the constraints expressed in the feature model).
+%A product is thus denoted by application of the semantics function for a
+%configuration knowledge,
+%$$[\![\_]\!]: CK \to AM \to Configuration \to \mathcal{F}[Asset]$$
+%such that for a given configuration $c \in [\![F]\!]$,
+%$[\![K]\!]^A_c$ represents the corresponding product. A product line also
+%requires that all its products are well-formed, which corresponds to the
+%notion of type-checking in programming languages.
+%
+%In order to ensure behavior preservation during product line evolution,
+%\cite{BorbaPLRefinement} defined the notion of product line refinement.
+%This concept establishes conditions under which the exhibited behavior of
+%preexisting products is not affected by asset, feature model or configuration
+%knowledge refactoring (although new behavior which does not affect previous
+%use scenarios is allowed). Hence, mutual refinement of two product lines would
+%effectively mean behavioral equivalence.
+%
+%The proposed refinement notion is grounded on the concept of asset refinement,
+%a similar requirement on behavior preservation for assets.
+%For instance, one can safely rename all occurrences of a class name to an
+%unused symbol (such that there is no name-clash) or add a new method not
+%referenced elsewhere. The authors provide a formalization of these concepts
+%in the PVS proof assistant \citep{PVS:language} such that asset refinement
+%is a parameter to the product line theory.
+%
+
+%\subsubsection{Adoption Strategies}
+%
+%In order to realize a software product line, there are three possible
+%adoption strategies \citep{Krueger2001}:
+%\begin{description}
+%    \item[Proactive]
+%        Develop a product line from scratch based on careful analysis and
+%        design methods. Roughly resembles the waterfall methodology for
+%        single-software development.
+%
+%    \item[Extractive]
+%        Incrementally refactor a collection of existing products to form a
+%        product line, extracting the common and varying parts of assets.
+%
+%    \item[Reactive]
+%        Extend the product line incrementally on demand.
+%\end{description}
+%
+%Those strategies can be combined as needed.
+%For instance, An SPL developed by means of a proactive approach eventually
+%meets new requirements, which can be addressed using a reactive approach.
+%\cite{Alves2007} propose a method for SPL adoption which relies on extracting
+%a product line and then incrementally evolving it with a reactive approach.
+
+
+%\subsubsection{Variability Implementation}
+%
+%\cite{FOSPL} classify variability implementation techniques in three
+%dimensions:
+%\begin{description}
+%    \item[Binding time]
+%        This dimension refers to the phase during product derivation in which
+%        the existing variability is resolved. This can happen before or
+%        during compilation (\emph{compile-time} or \emph{static} variability),
+%        at program startup (\emph{load-time} variability) or during execution
+%        (\emph{run-time} variability). The ability to perform each of those is
+%        closely related to the other dimensions.
+%
+%    \item[Technology]
+%        Variability can be realized by means of tools specially built for this
+%        purpose (e.g., a preprocessor), but can also rely on programming
+%        language constructs (e.g., run-time parameters and \emph{if-then-else}
+%        blocks). These approaches are called respectively \emph{tool-based}
+%        and \emph{language-based}.
+%
+%    \item[Representation]
+%        The means by which variability is expressed in the assets.
+%
+%        \emph{Annotation-based} (or \emph{annotative}) approaches consist of
+%        annotating common assets with tags corresponding to features, such
+%        that product derivation can be done by removing the parts annotated
+%        with the features which are not selected.
+%
+%        \emph{Composition-based} (or \emph{compositional}) approaches tackle
+%        the variability in a modular way by segregating asset-parts which
+%        correspond to each feature in composable units. The ones corresponding
+%        to selected features in a given configuration are combined in order to
+%        derive a product.
+%
+%        Other authors also identify a form of variability representation known
+%        as \emph{transformation-based} \citep{DOPGeneration, HephaestusPL},
+%        which relies on transformations over base assets. These transformations
+%        are usually performed at the syntactic level, but this is not a formal
+%        restriction of this category of techniques.
+%\end{description}
+%
+%An usual annotative technique is the use of preprocessor directives. This is
+%the main variability representation mechanism in, e.g., the Linux Kernel
+%\citep{Passos2013}.
+%This choice of representation naturally limits the possible technology and
+%binding time to a compile-time tool-based approach. Nonetheless, flow-control
+%directives allow a run-time annotation- and language-based variability
+%implementation.
+%
+%As for compositional methods, we can see a plug-in framework as an instance of
+%language-based load-time approach.
+%In the realm of tool-based compile-time approaches, there are two main
+%composition mechanisms of interest to SPL engineering:
+%\begin{description}
+%    \item[Aspect-Oriented Programming]
+%        \citep{KiczalesAOP1997} This technique aims at the
+%        modularization of cross-cutting concerns, i.e., concepts which are
+%        necessarily scattered across the implementation of other concerns.
+%        These cross-cutting concerns are implemented in modules named
+%        \emph{aspects}, which are woven into the main program based on the
+%        specification of the points which they affect.
+%
+%    \item[Feature-Oriented Programming]
+%        \citep{PrehoferFOP, BatoryAHEAD} This is
+%        a technique by which the concepts in a program are implemented in
+%        modules, each of which is associated to a feature. Product derivation
+%        is thus carried out by incrementally composing these so called
+%        \emph{feature modules} into the result of the previous composition,
+%        yielding at each step a program which increments the previous one with
+%        the refinements in the given feature.
+%        A feature module can add new classes and members, as well as override
+%        existing methods.
+%\end{description}
+%
+%\emph{Delta-Oriented Programming} \citep{Schaefer2010} is a well-know example
+%of transformation-based (or \emph{transformational}) approach
+%\citep{DOPTransformational}.
+%It is similar to Feature-Oriented Programming, but the modules (\emph{deltas})
+%are also capable of removing classes and members.
+%Additionally, the deltas are not mapped one-to-one into features. Instead,
+%there is an explicit language construct for specifying dependencies between
+%them and predicates over the selected features which must hold true for a
+%given delta to be applicable.
+%
+
+%\subsection{Software Analysis in Product Lines}
+%\label{sec:analysis}
+%
+%Analysis of Software Product Lines is a broad subject in that it can refer to
+%verification of any of the product line artifacts, including the feature model
+%and the configuration knowledge \citep{FOSPL}.
+%Hence, we focus on verification of the possibly derivable products.
+%This does not necessarily mean generating all products in an SPL and analyzing
+%each of them, as long as analyzed properties can be somehow generalized to the
+%product line as a whole (\emph{variability-aware analysis}).
+
+
+%\subsubsection{Techniques}
+%
+%As with single-system analysis, product line analyses can be performed
+%statically (at compilation time or before) or at execution time.
+%Although run-time analyses such as unit and integration testing have been
+%applied in the context of software product lines \citep{SPLTestSurvey}, we
+%examine only analyses which apply statically. This is a design decision for
+%the proposed research, based on the availability of static analysis tools and
+%on ongoing activity within our research group regarding this kind of technique.
+%
+%\cite{Thum2014} performed a survey on static analyses of software product
+%lines in which four main classes where identified:
+%\begin{description}
+%    \item[Type checking]
+%        Analysis of well-typedness of a program with respect to a given
+%        \emph{type system} \citep{PiercePL}. It captures errors such as
+%        mismatched method signatures and undeclared types, which are prone
+%        to happen if features can add or remove methods and classes.
+%
+%    \item[Model checking]
+%        Consists of systematically exploring the possible states in a formal
+%        model of the system in order to find out whether it satisfies a given
+%        formal specification \citep{BaierPMC}. Some model checkers operate
+%        directly on source code, while others allow other abstractions of the
+%        system's behavior (e.g., Markov chains).
+%
+%    \item[Static analysis]
+%        Based on compile-time approximation of the run-time behavior of a
+%        program, such as in data-flow and control-flow analyses. This type
+%        of analysis usually involves the verification of source code and can
+%        signal problems such as access to uninitialized memory regions.
+%
+%    \item[Theorem proving]
+%        Relies on encoding system properties as theories and specifications
+%        of its desired behavior as theorems expressed in higher-order logic.
+%        These theorems then need to be proved in order to assert the modeled
+%        system is correct, i.e., it satisfies the specified properties.
+%        The theories and theorems may be specified using the language of a
+%        proof assistant such as PVS \citep{PVS:language}, or can be generated
+%        from invariant specifications declared in the source code using JML
+%        \citep{JML}, for example.
+%
+%\end{description}
+%
+
+%\subsubsection{Strategies}
+%
+%\cite{Thum2014} define three analysis strategies for product lines, i.e.,
+%approaches for applying the aforementioned analysis techniques to an SPL as a
+%whole. Those strategies are the following:
+%\begin{description}
+%    \item[Product-based]
+%        Consists of analyzing derived products or models thereof. This can be
+%        accomplished by generating all such products (the \emph{brute-force}
+%        approach) or by sampling them based on some coverage criteria (e.g.,
+%        covering pair-wise or triple-wise feature interaction).
+%        The main advantage of this strategy is that the analysis can be
+%        performed exactly as in the single-system case by off-the-shelf tools.
+%        However, the time and processing cost can be prohibitively large if
+%        the considered SPL has a great number of products.
+%
+%    \item[Feature-based]
+%        Analyzes all domain artifacts implementing a given feature in
+%        isolation, not considering how they relate to other features.
+%        However, issues related to feature interactions are frequent, which
+%        renders false the premise that features can be modularly analyzed.
+%        In spite of this, this approach is able to verify compositional
+%        properties (e.g., syntactic correctness) and has the advantage of
+%        supporting \emph{open-world scenarios} --- since a feature is analyzed
+%        in isolation, not all features must be known in advance.
+%
+%    \item[Family-based]
+%        Operates only in domain artifacts, usually merging all variability
+%        into a single \emph{product simulator} (also known as \emph{virtual
+%        product} or \emph{metaproduct}). This simulator is then analyzed
+%        by considering only valid combinations of the features as specified
+%        in the feature model.
+%        It is possible, for instance, to compose feature modules by encoding
+%        their variability as \emph{if-then-else} blocks and dispatcher
+%        methods and then apply off-the-shelf software model checking
+%        \citep{ApelSimulator}.
+%\end{description}
+%
+%There is also the possibility to employ more than one strategy simultaneously.
+%In this way, weaknesses resulting from one approach can be overcome by the
+%application of another. This is particularly useful for feature-based
+%approaches, which are generally not sufficient due to feature interactions.
+%
+%For instance, \cite{ThumProofComposition} proposes formal verification of
+%design-by-contract properties \citep{MeyerDbC} restricted to feature modules.
+%This would be characterized as a feature-based strategy, but after product
+%derivation the proof obligations which are verified feature-wise can be
+%changed due to source code transformation. Hence, each product is derived in
+%order to generate the complete proof obligations.
+%Nonetheless, most of the proofs obtained in the feature-based phase can be
+%reused, so this composite strategy can be seen as \emph{feature-product-based}.
+%
+%Similarly, it is possible to derive \emph{feature-family-based},
+%\emph{family-product-based} and even \emph{feature-family-product-based}
+%strategies, although the aforementioned survey did not find any case of the
+%latter in the literature.
+%
+
+%\begin{abstract}
+%    Software Product Lines (SPL) Engineering is a means to systematically
+%    managing variability and commonality in software systems. As with any
+%    such system, it is often the case that some analysis must be performed
+%    in order to assure desired quality attributes.
+%    In scenarios with high variability, however, applying standard software
+%    analysis techniques to every product in a product line is usually
+%    not feasible, due to combinatorial explosion.
+%
+%    In order to handle these cases, many analysis techniques especially
+%    tailored to product lines have been proposed. Although they are different
+%    to some extent, they share features which suggest there is potential for
+%    reuse. Nonetheless, this commonality has not yet been explored.
+%
+%    Thus, we propose to apply SPL techniques to building a framework for
+%    product line analyses. It will consist of implementation (source code)
+%    and theoretical assets representing variability in the methods and in
+%    corresponding proofs.
+%    With this approach, we expect to gather information regarding commonality
+%    and variability in this domain. We also expect to gain insight on the
+%    underlying principles supporting the correctness of each of those methods.
+%\end{abstract}
+
+%\selectlanguage{brazil}
+%\begin{resumo}
+%    Engenharia de Linhas de Produtos de Software (LPS) é uma maneira de
+%    tratar sistematicamente a variabilidade e a comunalidade existente em
+%    sistemas de software. Como ocorre com qualquer desses sistemas,
+%    normalmente é necessário realizar alguma análise que garanta atributos
+%    de qualidade desejados.
+%    Em cenários em que há grande variabilidade, no entanto, aplicar
+%    técnicas convencionais de análise a cada produto de uma linha não é
+%    factível, de maneira geral, devido à explosão combinatória.
+%
+%    De forma a tratar esses casos, foram propostas diversas técnicas de
+%    análise especificamente adaptadas para linhas de produtos. Embora sejam
+%    diferentes até certo ponto, elas compartilham características que
+%    sugerem potencial para reuso. No entanto, essa comunalidade ainda não
+%    foi explorada.
+%
+%    Assim, propomos aplicar técnicas de LPS à construção de um arcabouço
+%    para análises de linhas de produtos. Este consistirá de artefatos de
+%    implementação (código-fonte) e teóricos que representarão a
+%    variabilidade presente nos métodos e em suas demonstrações.
+%    Dessa forma, esperamos agregar informações a respeito da comunalidade
+%    e da variabilidade existentes nesse domínio. Espera-se, ainda, adquirir
+%    maior compreensão sobre os princípios que regem a corretude de cada um
+%    desses métodos.
+%\end{resumo}

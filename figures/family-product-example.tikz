@@ -1,0 +1,48 @@
+\begin{tikzpicture}[node distance=20pt and 20pt,
+	align=center,
+	text centered]%, on grid]
+	\scriptsize
+	\node [draw, circle] (ss0) {$s_0$};
+	\node [draw, circle, right= of ss0] (ss1) {$s_1$};
+	\node [draw, circle, right= of ss1] (ss2) {$s_2$};
+	\node [draw, circle, right= of ss2] (sssuc) {$s_{\mathit{suc}}$};
+	\node [draw, circle, below= of sssuc] (sserr) {$s_{\mathit{err}}$};
+	
+	\draw[->] (ss0) to node [midway, above] {$0.99$} (ss1);
+	\draw[->] (ss0) to [bend right=25] node [near start, right] {$0.01$} (sserr);
+	\draw[HlEdge] (ss1) to node [midway, above] {$1$} (ss2);
+	\draw[HlEdge] (ss1) to [bend left=35] node [midway, above] (sshortlab) {$0$} (sssuc);
+	\draw[->] (ss2) to node [midway, above] {$0.99$} (sssuc);
+	\draw[->] (ss2) to [bend right=25] node [near start, right] {$0.01$} (sserr);
+	\draw[->] (sssuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (sssuclab) {$1$} (sssuc);
+	\draw[->] (sserr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (sserrlab) {$1$} (sserr);
+	
+	\node [draw=none, rectangle, fit=(ss0) (sssuc) (sserrlab) (sserr) (sshortlab)] (dtmc) {};
+	
+	\node [draw, circle, right= 170pt of ss0] (s0) {$s_0$};
+	\node [draw, circle, right= of s0] (s1) {$s_1$};
+	\node [draw, circle, right= of s1] (s2) {$s_2$};
+	\node [draw, circle, right= of s2] (ssuc) {$s_{\mathit{suc}}$};
+	\node [draw, circle, below= of ssuc] (serr) {$s_{\mathit{err}}$};
+	
+	\draw[->] (s0) to node [midway, above] {$0.99$} (s1);
+	\draw[->] (s0) to [bend right=25] node [near start, right] {$0.01$} (serr);
+	\draw[HlEdge] (s1) to node [midway, above] {$x$} (s2);
+	\draw[HlEdge] (s1) to [bend left=35] node [midway, above] (shortlab) {$1-x$} (ssuc);
+	\draw[->] (s2) to node [midway, above] {$0.99$} (ssuc);
+	\draw[->] (s2) to [bend right=25] node [near start, right] {$0.01$} (serr);
+	\draw[->] (ssuc) to [loop right, in=30, out=330, looseness=4] node [midway, right] (ssuclab) {$1$} (ssuc);
+	\draw[->] (serr) to [loop right, in=30, out=330, looseness=4] node [midway, right] (serrlab) {$1$} (serr);
+	
+	\node [draw=none, rectangle, fit=(s0) (ssuc) (serrlab) (serr) (shortlab)] (fdtmc) {};
+	
+	
+	\normalsize
+	\node [below= 50pt of fdtmc] (expr) {$0.9801\cdot x + 0.99\cdot(1-x)$};
+	\node at (dtmc|-expr) (reliability) {$0.9801$};
+	
+	\draw[product] (fdtmc) to node [midway, above] {$\pi$} node[midway, below] {$[x \mapsto 1]$} (dtmc);
+	\draw[family] (fdtmc) to node [midway, right] {$\hat{\alpha}$} (expr);
+	\draw[product] (dtmc) to node [midway, left] {$\alpha$} (reliability);
+	\draw[product] (expr) to node[midway, above] {$\sigma$} node[midway, below] {$[x \mapsto 1]$} (reliability);
+	\end{tikzpicture}

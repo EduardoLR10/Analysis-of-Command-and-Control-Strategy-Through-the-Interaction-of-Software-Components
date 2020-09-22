@@ -1,0 +1,242 @@
+\section{Background}
+\label{sec:background}
+
+Before presenting our framework of product-line analyses, we first explain basic concepts
+regarding software product lines (\Cref{sec:spl-foundations}) and product-line analysis (\Cref{sec:analysis-taxonomy}).
+We also briefly overview transition systems, the mathematical foundation of the
+analysis techniques that inspired this work (\Cref{sec:transition-systems}).
+Last, we present algebraic decision diagrams (\Cref{sec:ADD}), which are leveraged as variational data structures to support family-based analyses within our framework.
+
+\subsection{Software Product Lines}
+\label{sec:spl-foundations}
+
+A Software Product Line (SPL) is a set of software-intensive systems that
+share a common, managed set of features satisfying the specific needs of a
+particular market segment or mission and that are developed from a common set
+of core assets in a prescribed way \citep{ClementsSPL2001}.
+The main goal in product-line engineering is managing variability,
+which is defined by \citet{VanGurp2001} as the ability to change or
+customize a system.
+To accomplish this, it is useful to abstract variability in terms of
+\emph{features}.
+The concept of a feature encompasses both intentions of
+stakeholders and implementation-level concerns, and has been subject to a
+number of definitions \citep{FOSPL}.
+Synthetically, it can be seen as a characteristic or end-user-visible
+behavior of a software system.
+The features of a product line and their relationships are documented in a
+\emph{feature model}~\citep{FODA,CzarneckiGP2000}, which can be graphically
+represented as a \emph{feature diagram}.
+
+A given software system in a product line is referred to as a \emph{product}
+and is specified by a \emph{configuration}, which is a selection of features
+respecting the constraints established by the feature model.
+A product consists of a set of assets (e.g., source code files,
+test cases, documentation), which are derived from a common 
+\emph{asset base}.
+The mapping between a given configuration and the assets that constitute the
+corresponding product is called \emph{configuration knowledge}
+\citep{CzarneckiGP2000}.
+Configuration knowledge may consist of selecting source files, for instance,
+but may also incorporate processing tasks over the selected assets, such as running
+the C Preprocessor.
+
+The locations in the assets at which variation occurs are called \emph{variation points}.
+There are three common approaches for representing 
+variability at implementation level: annotative, compositional,
+and transformational~\cite{Kastner2008,DOPTransformational}.
+\emph{Annotative} approaches annotate common assets with
+tags corresponding to features, such that product derivation can be done by
+removing the parts annotated with the features not selected (e.g., by using preprocessor directives~\cite{PassosExtended}).
+\emph{Compositional} approaches tackle the variability in a modular way
+by segregating asset-parts that correspond to each feature in composable units;
+the ones corresponding to selected features in a given configuration are combined
+to derive a product. Last, \emph{transformational} approaches, more generally,  rely on
+transformations of base assets;
+these transformations usually manipulate assets at
+the syntactic level, but this is not a formal
+restriction of this category of techniques.
+
+
+\subsection{Analysis Taxonomy}
+\label{sec:analysis-taxonomy}
+
+Analysis of software product lines is a broad subject in the sense that it can refer to
+reasoning about any of the product line artifacts, including the feature model
+and the configuration knowledge \cite{FOSPL}.
+We focus on the possibly derivable products.
+This does not necessarily mean generating all products in a product line and analyzing
+each of them, as long as analyzed properties can be generalized to the
+product line as a whole.
+We refer to the latter case as \emph{variability-aware analysis}.
+
+\citet{Thum2014} conducted a survey defining three dimensions of analysis strategies for product lines:
+\begin{description}
+    \item[Product-based.]
+        Product-based analysis consists of analyzing the derived products or models thereof. This can be
+        accomplished by generating all such products (the \emph{brute-force}
+        approach) or by sampling a subset of them.
+        The main advantage of this strategy is that the analysis can be
+        performed exactly as in the single-system case using off-the-shelf tools.
+        However, the analysis effort can be prohibitively large
+        (exponential blowup) if the considered product line has a large number
+        of products.
+
+    \item[Feature-based.]
+        Feature-based analysis analyzes all domain artifacts implementing a given feature in
+        isolation, not considering how they relate to other features.
+        However, issues related to feature interactions are frequent~\cite{IndustrialAnalysisSurvey, SamplingStrategies, FeatureInteractionFaults}, which
+        renders the premise false that features can be modularly analyzed.
+        In spite of this, this approach is able to verify compositional
+        properties (e.g., syntactic correctness) and has the advantage of
+        supporting \emph{open-world scenarios} --- since a feature is analyzed
+        in isolation, not all features must be known in advance.
+
+    \item[Family-based.]
+        Family-based analysis operates only in domain artifacts and incorporates the knowledge about valid feature combinations. It explores sharing, thereby avoiding redundant computations across multiple products.
+        Family-based analyses may operate by merging all variability
+        into a single \emph{product simulator} (also known as \emph{150\% model}~\cite{150Model}), which is prone to single-product analysis techniques.
+        Nonetheless, there are also approaches specifically tailored to product lines, leveraging custom-made tools and techniques~\cite{DelawareCB09,LienhardtDTT18}.
+\end{description}
+
+Specifically, our framework addresses the static analysis of  properties of derivable products, and not of variability management  artifacts, so automated analyses of feature models~\cite{BENAVIDES2010615} are out of scope.
+
+Additionally, there is the possibility to employ more than one strategy simultaneously.
+In this way, weaknesses resulting from one approach can be overcome by another. This is particularly useful for feature-based
+approaches, which are generally not sufficient due to feature interactions.
+For instance, \citet{ThumProofComposition} propose formal verification of
+design-by-contract properties \cite{MeyerDbC} restricted to individual feature modules.
+This would be characterized as a feature-based strategy, but the actual
+contract of a given product cannot be known before the corresponding
+feature modules are composed.
+Hence, the proposed approach is to define \emph{partial} proofs for the
+contracts of individual modules (feature-based step), then generate proof
+obligations for each derived product and verify if these obligations are
+satisfied by a composition of the partial proofs for the selected
+features (product-based step).
+Since the product-based phase leverages the proofs obtained in the
+feature-based phase, this composite strategy can be seen as
+\emph{feature-product-based}.
+
+Product-line analyses combining different  strategies abound and are classified as
+follows~\cite{Thum2014,PLAModel}:
+
+
+\begin{description}
+    \item[Feature-product-based.]
+        Consists of a feature-based analysis followed by a product-based
+        analysis.
+        This strategy leverages the feature-based phase (e.g., computing properties 
+        that hold for individual features) to ease the
+        analysis effort necessary for the enumerative product-based phase.
+    \item[Feature-family-based.]
+        In this strategy, one performs a feature-based analysis to check
+        properties that apply individually for each feature, then the
+        results are combined maintaining variability to undergo a family-based analysis.
+        This last phase considers the feature model constraints and the
+        interactions between features all at once, enabling the analysis of
+        properties that are not observable in the scope of a single feature.
+    \item[Family-product-based.]
+        This strategy consists of a partial family-based analysis followed
+        by a product-based analysis that leverages the intermediate
+        results.
+        %Such an approach is useful when the available resources are not
+        %sufficient for a complete family-based analysis, for instance.
+    \item[Feature-family-product-based.]
+        In this strategy, one performs a feature-based analysis followed by a
+        family-product-based analysis that leverages the analysis effort of
+        the feature-based phase.
+\end{description}
+
+Although this taxonomy of product-line analyses provides an overall
+understanding, more refinement is necessary to formalize their underlying
+analysis steps and interrelations, key properties (e.g., commutativity of intermediate analysis steps), and preconditions (e.g., assumption on compositionality of basic analyses).
+This way, one can effectively explore similarities and suitably manage variability among these approaches.
+
+\subsection{Transition Systems}
+\label{sec:transition-systems}
+
+\emph{Transition Systems}~(TS) are a formalism to represent the behavior of a
+system as states and transitions among them. 
+A TS consists of a set of states and transitions between these states annotated with actions (e.g., $s \xrightarrow{\alpha} s'$ denotes a transition from state $s$ to state $s'$ due to some action $\alpha$). Also, each state is labeled with a set of so-called \emph{atomic properties}, which represent all the properties that hold when the system is in this state. Examples of atomic properties are \textit{failure} and \textit{sleep}, which represent that the system is in a failure state or in sleep mode, respectively. Starting from these atomic properties, one can define properties across the transitions between the system states. A most simple example is ``the next state of the system must not be a failure state''. Another is ``the system must never be in a failure state''. A more complex is ``the system cannot enter sleep mode until all failures are resolved''. These properties are typically expressed in some temporal logic like Computation Tree Logic (CTL)~\cite{Clarke1981} and Linear Temporal Logic (LTL)~\cite{Pnueli1977}. They are considered as behavioral properties, i.e., they consider the sequence (and in the case of CTL, also the alternance) of visible states. The properties expressible include safety, reachability, and repetitive reachability.
+
+\subsection{Algebraic Decision Diagrams}
+\label{sec:ADD}
+
+An Algebraic Decision Diagram (ADD) \cite{ADD} is a data structure that encodes
+$k$-ary Boolean functions $\mathbb{B}^k \to \mathbb{R}$.
+As an example, \Cref{fig:example-add} depicts an ADD representing a
+binary function $f$.
+\begin{figure}[!htb]
+    \begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        \label{eq:example-add}
+        f(x, y) = \begin{cases}
+            0.9 & \text{if } x \land y \\
+            0.8 & \text{if } x \land \lnot y \\
+            0   & \text{otherwise}
+        \end{cases}
+    \end{align*}%
+    \end{minipage}%
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}[node distance=30pt, align=center, text centered, on grid]
+            \fontsize{10}{12}
+            \node [draw, ellipse] (x) {$\texttt{x}$};
+            \node [draw, ellipse, below left= of x] (y) {$\texttt{y}$};
+            \node [draw, rectangle, below right= of y] (onlyx) {$0.8$};
+            \node [draw, rectangle, below left= of y] (xy) {$0.9$};
+            \node [draw, rectangle, right= of onlyx] (szero) {$0$};
+
+            \draw[-] (x) -- (y);
+            \draw[-, dashed] (x) to [bend left=25] (szero);
+            \draw[-, dashed] (y) -- (onlyx);
+            \draw[-] (y) -- (xy);
+        \end{tikzpicture}
+    \end{minipage}%
+    \caption{ADD $A_f$ representing the Boolean function $f$ on the left}
+    \label{fig:example-add}
+\end{figure}
+
+Each internal node in the ADD (one of the circular nodes) marks a
+decision over a single parameter.
+Function application is achieved by walking the ADD along a path that
+denotes this decision over the values of actual parameters: if the parameter
+represented by the node at hand is $1$ (\textit{true}), we take the solid edge;
+otherwise, if the actual parameter is $0$ (\textit{false}), we take the dashed edge.
+The evaluation ends when we reach a terminal node (one of the square nodes at
+the bottom).
+
+In the example, to evaluate $f(1, 0)$, we start in the \texttt{x} node, take the
+solid edge to node \texttt{y} (since the actual parameter $x$ is $1$), then take
+the dashed edge to the terminal $0.8$.
+Thus, $f(1, 0) = 0.8$.
+Henceforth, we will use a function application notation for ADDs, meaning that, if $A$ is an ADD that encodes
+function $f$, then $A(b_1, \dotsc, b_k)$ denotes $f(b_1, \dotsc, b_k)$.
+For brevity, we also denote indexed parameters $b_1, \dotsc, b_k$ as $\bar{b}$,
+and the application $A(\bar{b})$ by $\llbracket A \rrbracket_{\bar{b}}$.
+
+ADDs are data structures that allow efficient application of arithmetics over Boolean functions.
+We employ Boolean functions to represent mappings from product-line
+configurations (Boolean tuples) to corresponding values for quality properties of interest.
+An important aspect that motivated the use of ADDs for this
+variability-aware arithmetics is that the enumeration of all configurations to perform Real
+arithmetics on the respective quality property values is usually subject to exponential blowup.
+ADD arithmetic operations are linear in the input size, which, in turn,
+can also be exponential in the number of Boolean parameters (i.e., ADD variables), in the worst case.
+However, given a suitable variable ordering, ADD sizes are often polynomial, or even linear \citep{ADD}.
+Thus, for most practical cases, ADD operations are more efficient than enumeration.
+
+An arithmetic operation over ADDs is equivalent to performing
+the same operation on corresponding terminals of the operands.
+Thus, we denote ADD arithmetics by corresponding real arithmetics operators.
+Formally, given a valuation for Boolean parameters $\bar{b} = b_1,\dotsc,b_k \in \mathbb{B}^k$, it holds that:
+\begin{enumerate}
+    \item
+        $\forall_{\odot \in \{+, -, \times, \div\}} \cdot {(A_1 \odot A_2)(\bar{b}) = A_1(\bar{b}) \odot A_2(\bar{b})}$
+    \item
+        $\forall_{i \in \mathbb{N}} \cdot {A_1^i(\bar{b}) = A_1(\bar{b})^i}$
+\end{enumerate}
+
+More details on the algorithms for ADD operations are outside the scope
+of this work and can be found elsewhere~\citep{ADD}.

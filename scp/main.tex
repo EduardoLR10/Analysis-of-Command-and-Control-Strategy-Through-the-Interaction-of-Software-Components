@@ -1,0 +1,233 @@
+\documentclass[acmsmall,colorlinks, dvipsnames]{acmart}
+%% colorlinks: option for package hyperref
+%% dvipsnames: option for package xcolor
+
+\usepackage{mystyle}
+\usepackage{mymacros}
+\usepackage{booktabs}
+\usepackage{xtab}
+
+% Stretch whitespace a little bit to avoid overfull.
+\emergencystretch=1em
+
+\setcitestyle{numbers, comma}
+
+%%Este comando eh usado para referenciar código PVS
+% \newcommand{\pvscode}[1]{\texttt{#1}} 
+\newcommand{\pvscode}[1]{\ensuremath{\mathit{#1}}} 
+\newtheorem{axiom}{Axiom}
+
+%\journal{Science of Computer Programming}
+
+%%
+%% These commands are for a JOURNAL article.
+\acmJournal{TOSEM}
+
+%% The following commands result in compilation errors if given empty arguments.
+% \acmVolume{}
+% \acmNumber{}
+% \acmArticle{}
+% \acmMonth{}
+
+
+
+%\bibliographystyle{elsarticle-harv}
+\bibliographystyle{model2-names}
+
+
+\begin{document}
+ 
+\selectlanguage{english}
+
+%\begin{frontmatter}
+
+
+
+\title{dA Formal Framework of Software Product Line Analyses}
+
+    % Authors
+    
+%Thiago
+%Leopoldo
+%Vander
+%Sven
+%Maxime
+%Rohit
+
+
+
+\author{Thiago Castro}
+\affiliation{%
+  \institution{Systems Development Center - Brazilian Army}
+  \streetaddress{QG do Exército - Bloco G - 2º Andar, 70630-901, Setor Militar Urbano}
+  \city{Brasilia}
+  \country{Brazil}}
+\email{thiago.mael@gmail.com}
+
+\author{Leopoldo Teixeira}
+\affiliation{%
+  \institution{Federal University of Pernambuco}
+  \streetaddress{Av. Jornalista Aníbal Fernandes, s/n - Cidade Universitária (Campus Recife), 50740-560}
+  \city{Recife}
+  \country{Brazil}}
+\email{lmt@cin.ufpe.br}
+
+\author{Vander Alves}
+\affiliation{%
+  \institution{University of Brasília}
+  \streetaddress{Campus Universitário Darcy Ribeiro - Edifício CIC/EST, 70910-900}
+  \city{Brasilia}
+  \country{Brazil}}
+\email{valves@unb.br}
+
+\author{Sven Apel}
+\affiliation{%
+  \institution{Saarland University, Saarland Informatics Campus}
+  \streetaddress{Campus E1 1, 66123} 
+%  \streetaddress{Saarland Informatics Campus, Saarland University, Campus E1 1, 66123}
+  \city{Saarbruecken}
+  \country{Germany}}
+\email{apel@cs.uni-saarland.de}
+
+\author{Maxime Cordy}
+\affiliation{%
+  \institution{University of Luxembourg}
+  \streetaddress{6, rue Richard Coudenhove-Kalergi L-1359}
+  \city{Luxembourg}
+  \country{Luxembourg}}
+\email{maxime.cordy@uni.lu}
+
+\author{Rohit Gheyi}
+\affiliation{%
+  \institution{Federal University of Campina Grande}
+  \streetaddress{Av. Aprigio Veloso, 882, Bloco CN, Bairro Universitário
+58.429-900}
+  \city{Campina Grande}
+  \country{Brazil}}
+\email{rohit@dsc.ufcg.edu.br}
+
+
+
+
+    
+
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+
+A number of approaches lift analyses such as type checking, model
+checking, and theorem proving to product-line analysis. These
+approaches share features that suggest an unexplored potential for
+reuse of key analysis steps and properties,
+implementation, and verification efforts. Despite the availability of
+taxonomies synthesizing such approaches, there still remains the
+underlying problem of not being able to describe precisely and
+uniformly product-line analyses and their properties. We
+propose a formal framework of product-line analysis. 
+The framework models analyses in a compositional
+manner, providing an overall understanding of the space of
+family-based, feature-based, and product-based analysis strategies. 
+It defines precisely how the different types of product-line analyses compose and
+inter-relate. To ensure soundness,  we formalize the framework, 
+providing a precise specification of key concepts and properties of
+the individual analyses as well as proofs of key soundness results. 
+The formalization provides unambiguous definitions of domain terminology and assumptions as well as solid evidence of key properties based on rigorous formal proofs. 
+To qualitatively assess the generality of the framework, we
+ discuss to what extent it describes five
+representative product-line analyses on the following properties:
+safety, performance, data-flow facts, security, and functional program
+properties. 
+
+
+
+% Problem
+%There is a number of approaches that lift analyses such as type checking, model checking, and theorem proving to \emph{product-line analysis}. Although different in purpose, these approaches share features that suggest there is a yet unexplored potential for reuse of specification of key analysis steps and properties, implementation, and verification efforts.
+% Relevance
+%Despite the availability of taxonomies synthesizing such approaches, 
+%there still remains the underlying problem of not being able to describe precisely and uniformly product-line analyses and their properties. Indeed, more refinement is necessary to formalize core concepts, explore similarities in analysis steps and key properties, and suitably manage variability among these approaches.
+% Solution 
+%To address this underlying problem, we propose a framework of product-line analysis and provide guidance on its customization. The framework presents  analyses in a compositional manner at a conceptual level,  
+%providing an overall understanding of the structure of the space of family-based, feature-based, and product-based analyses, showing how the different types of product-line analyses compose and inter-relate.  
+% Evaluation
+%To ensure soundness of the framework, we formalize it using the PVS proof assistant, providing a precise specification of key concepts and properties of the individual analyses as well as proofs of key soundness results. 
+%To qualitatively assess the generality of the framework, we retrospectively discuss to what extent it can describe five representative product-line analyses on the following properties: safety, performance, data-flow facts, security, and functional program properties. 
+%Lastly, to guide the use of the framework, we define a product line of product-line analyses techniques 
+%($PL^{2}Ana$), which exposes the configurability of the framework and systematizes its customization. Overall, the framework provides a more comprehensive and deeper understanding of underlying 
+%principles used in these analyses, which we envision could help other researchers to lift existing 
+%single-product analysis techniques to yet under-explored variability-aware approaches. 
+
+\end{abstract}
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%%
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10011007.10011074.10011092.10011096.10011097</concept_id>
+       <concept_desc>Software and its engineering~Software product lines</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011074.10011099.10011692</concept_id>
+       <concept_desc>Software and its engineering~Formal software verification</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Software product lines}
+\ccsdesc[500]{Software and its engineering~Formal software verification}
+
+\keywords{Software Product Lines, Product-line Analysis, Framework, Formalization}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+    
+
+%    \input{content/abstract}
+
+%    \begin{keyword}
+%        Software Product Lines\sep Product-line Analysis \sep Verification
+%    \end{keyword}
+
+%\end{frontmatter}
+
+\input{content/introduction}
+\input{content/background}
+\input{content/strategies}
+\input{content/framework}
+%\input{content/pl2ana}
+\input{content/threats}
+\input{content/relatedWork}
+\input{content/conclusion}
+
+\section*{Acknowledgements}
+
+We would like to thank the following people for fruitful discussions and suggestions on how to improve this work: Tobias Sena, Andreas Stahlbauer, Christoph Seidl, Malte Lochau, Matthias Kowal, Ina Schaefer, Thomas Th{\"u}m, and Pierre-Yves Schobbens. 
+Vander Alves was partially supported by CNPq (grant 310757/2018-5), FAPDF (grant SEI 00193-00000926/2019-67), and the Alexander von Humboldt Foundation.
+Leopoldo Teixeira was partially supported by CNPq (grant 409335/2016-9) and FACEPE (APQ-0570-1.03/14), as well as INES 2.0,\footnote{\url{http://www.ines.org.br}} FACEPE grants PRONEX APQ-0388-1.03/14 and APQ-0399-1.03/17, and CNPq grant 465614/2014-0.
+Sven Apel was partially supported by the German Research Foundation (DFG) within the Heisenberg Programme (AP 206/6).
+
+%\section*{\refname}
+%\bibliography{references}
+\bibliography{references,mcr}
+%qualifying
+
+%\newpage
+%\begin{appendices}
+%
+%\renewcommand\thefigure{\thesection.\arabic{figure}}
+%\setcounter{figure}{0}
+%
+%\section{Probabilistic Models}
+%\label{app:probabilistic-models}
+%\input{content/appendix/models}
+%
+%\end{appendices}
+
+\end{document}
