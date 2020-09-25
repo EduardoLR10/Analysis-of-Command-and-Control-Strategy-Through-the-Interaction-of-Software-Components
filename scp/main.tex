@@ -43,7 +43,7 @@
 
 
 
-\title{dA Formal Framework of Software Product Line Analyses}
+\title{Analysis of Command and Control Strategy Through the Interaction of Software Components}
 
     % Authors
     
@@ -54,23 +54,13 @@
 %Maxime
 %Rohit
 
-
-
-\author{Thiago Castro}
+\author{Eduardo Lemos Rocha}
 \affiliation{%
-  \institution{Systems Development Center - Brazilian Army}
-  \streetaddress{QG do Exército - Bloco G - 2º Andar, 70630-901, Setor Militar Urbano}
+  \institution{University of Brasília}
+  \streetaddress{Campus Universitário Darcy Ribeiro - Edifício CIC/EST, 70910-900}
   \city{Brasilia}
   \country{Brazil}}
-\email{thiago.mael@gmail.com}
-
-\author{Leopoldo Teixeira}
-\affiliation{%
-  \institution{Federal University of Pernambuco}
-  \streetaddress{Av. Jornalista Aníbal Fernandes, s/n - Cidade Universitária (Campus Recife), 50740-560}
-  \city{Recife}
-  \country{Brazil}}
-\email{lmt@cin.ufpe.br}
+\email{dudulr10@gmail.com}
 
 \author{Vander Alves}
 \affiliation{%
@@ -80,83 +70,13 @@
   \country{Brazil}}
 \email{valves@unb.br}
 
-\author{Sven Apel}
-\affiliation{%
-  \institution{Saarland University, Saarland Informatics Campus}
-  \streetaddress{Campus E1 1, 66123} 
-%  \streetaddress{Saarland Informatics Campus, Saarland University, Campus E1 1, 66123}
-  \city{Saarbruecken}
-  \country{Germany}}
-\email{apel@cs.uni-saarland.de}
-
-\author{Maxime Cordy}
-\affiliation{%
-  \institution{University of Luxembourg}
-  \streetaddress{6, rue Richard Coudenhove-Kalergi L-1359}
-  \city{Luxembourg}
-  \country{Luxembourg}}
-\email{maxime.cordy@uni.lu}
-
-\author{Rohit Gheyi}
-\affiliation{%
-  \institution{Federal University of Campina Grande}
-  \streetaddress{Av. Aprigio Veloso, 882, Bloco CN, Bairro Universitário
-58.429-900}
-  \city{Campina Grande}
-  \country{Brazil}}
-\email{rohit@dsc.ufcg.edu.br}
-
-
-
-
-    
-
 
 %%
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
 
-A number of approaches lift analyses such as type checking, model
-checking, and theorem proving to product-line analysis. These
-approaches share features that suggest an unexplored potential for
-reuse of key analysis steps and properties,
-implementation, and verification efforts. Despite the availability of
-taxonomies synthesizing such approaches, there still remains the
-underlying problem of not being able to describe precisely and
-uniformly product-line analyses and their properties. We
-propose a formal framework of product-line analysis. 
-The framework models analyses in a compositional
-manner, providing an overall understanding of the space of
-family-based, feature-based, and product-based analysis strategies. 
-It defines precisely how the different types of product-line analyses compose and
-inter-relate. To ensure soundness,  we formalize the framework, 
-providing a precise specification of key concepts and properties of
-the individual analyses as well as proofs of key soundness results. 
-The formalization provides unambiguous definitions of domain terminology and assumptions as well as solid evidence of key properties based on rigorous formal proofs. 
-To qualitatively assess the generality of the framework, we
- discuss to what extent it describes five
-representative product-line analyses on the following properties:
-safety, performance, data-flow facts, security, and functional program
-properties. 
-
-
-
-% Problem
-%There is a number of approaches that lift analyses such as type checking, model checking, and theorem proving to \emph{product-line analysis}. Although different in purpose, these approaches share features that suggest there is a yet unexplored potential for reuse of specification of key analysis steps and properties, implementation, and verification efforts.
-% Relevance
-%Despite the availability of taxonomies synthesizing such approaches, 
-%there still remains the underlying problem of not being able to describe precisely and uniformly product-line analyses and their properties. Indeed, more refinement is necessary to formalize core concepts, explore similarities in analysis steps and key properties, and suitably manage variability among these approaches.
-% Solution 
-%To address this underlying problem, we propose a framework of product-line analysis and provide guidance on its customization. The framework presents  analyses in a compositional manner at a conceptual level,  
-%providing an overall understanding of the structure of the space of family-based, feature-based, and product-based analyses, showing how the different types of product-line analyses compose and inter-relate.  
-% Evaluation
-%To ensure soundness of the framework, we formalize it using the PVS proof assistant, providing a precise specification of key concepts and properties of the individual analyses as well as proofs of key soundness results. 
-%To qualitatively assess the generality of the framework, we retrospectively discuss to what extent it can describe five representative product-line analyses on the following properties: safety, performance, data-flow facts, security, and functional program properties. 
-%Lastly, to guide the use of the framework, we define a product line of product-line analyses techniques 
-%($PL^{2}Ana$), which exposes the configurability of the framework and systematizes its customization. Overall, the framework provides a more comprehensive and deeper understanding of underlying 
-%principles used in these analyses, which we envision could help other researchers to lift existing 
-%single-product analysis techniques to yet under-explored variability-aware approaches. 
+--
 
 \end{abstract}
 
@@ -198,12 +118,10 @@ properties.
 %\end{frontmatter}
 
 \input{content/introduction}
-\input{content/background}
-\input{content/strategies}
-\input{content/framework}
-%\input{content/pl2ana}
-\input{content/threats}
-\input{content/relatedWork}
+\input{content/motivating}
+\input{content/channelSystem}
+\input{content/design}
+\input{content/evalutation}
 \input{content/conclusion}
 
 \section*{Acknowledgements}
@@ -215,7 +133,7 @@ Sven Apel was partially supported by the German Research Foundation (DFG) within
 
 %\section*{\refname}
 %\bibliography{references}
-\bibliography{references,mcr}
+\bibliography{references}
 %qualifying
 
 %\newpage
