@@ -1,2 +1,15 @@
 \section{Channel System}
 \label{sec:channelSystem}
+
+With each member being a set of roles, it remains to model a description of how each member communicates with another, exchanging information during the mission. Recalling our motivation example, some requirements are still missing, and need to be addressed. First, during the entire mission, members are communicating with some other entity all the time. This means that parallelism is important to maintain each entity executing its roles, i.e, functionalities, at the same time. For instance, drones that only execute tasks in some particular C2 approach can communicate with the drone that detains the task allocator role, while executing the next task. Most importantly, the drone responsible for allocating tasks can use some protocol to assess the status of the members, e.g, checking if the drone dropped or is fully functional. Likewise, the C2 approach selector and task allocator roles can exchange messages that may cause a new maneuver, caused by context changes.
+
+A channel system is composed of a group of data-dependent processes communicating with each via \textit{communication actions}~\cite{modelcheckingBaier}. With a program graph representing each process, transitions can be classified between conditional transitions, functioning as explained in Section \ref{subsec:PG}, or communication actions. This last type of transition works transmitting values through channels or receiving values from channels and assigning them to variables~\cite{modelcheckingBaier}. Additionally, channels can have a finite or infinite capacity of messages in a single channel, as well as a specified type of messages that can be stored in it. Finally, channel systems provide a notion of synchronization, whereas channels with a capacity different from zero function in a \textit{asynchronous} way and null capacity channels represent \textit{synchronous} communication~\cite{modelcheckingBaier}.
+
+In our motivating example, each member, comprising a set of role's program graphs, is switching between actions related to its function or actions related to communication purposes. To decide which action to take, members update variables to properly evaluate conditions. Thus, when a condition related to some context change becomes true, the member can transmit this feedback to the member that possesses the task allocator role using, for example, the channel \textit{ch1}. If the task allocator decides that the current C2 Approach is not capable of maintaining quality during execution, it can send a maneuver request to C2 approach selector drone, using, for example, channel \textit{ch3}. Figure \ref{fig:CS} illustrates this scenario.
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{.75}{\input{tikz/channelSystem}}
+    \caption{Channel System Representation}
+    \label{fig:CS}
+\end{figure}
