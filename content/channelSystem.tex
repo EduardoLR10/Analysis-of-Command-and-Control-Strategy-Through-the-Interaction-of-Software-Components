@@ -7,9 +7,45 @@ A channel system is composed of a group of data-dependent processes communicatin
 
 In our motivating example, each member, comprising a set of role's program graphs, is switching between actions related to its function or actions related to communication purposes. To decide which action to take, members update variables to properly evaluate conditions. Thus, when a condition related to some context change becomes true, the member can transmit this feedback to the member that possesses the task allocator role using, for example, the channel \textit{ch1}. If the task allocator decides that the current C2 Approach is not capable of maintaining quality during execution, it can send a maneuver request to C2 approach selector drone, using, for example, channel \textit{ch3}. Figure \ref{fig:CS} illustrates this scenario.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To provide C2 Agility, we present a computational model capable of representing the scenario elements behaviour based on the roles that such elements have. To cope with context changes, i.e., to provide C2 Agility, these members must reconfigure themselves or adjust their coordination through the communication structure and information exchanging. This capacity is demonstrated through a model that allows data exchange, so called channels, and a members' architecture  composed by features that can be enabled according to the circumstances, generating different configurations.
+
+The proposed computational model is a typed-parameterized extension of the channel system defined by~\cite{MC01}, henceforth referred to as C2 channel system (C2CS). This proposal is based on the principles of Channel Systems formed by PG, besides the modeling of the domain entities as Dynamic Software Products that allows the possibility of re-configuring according to circumstances, activating features compatible with the tasks to be performed by such entities, so called members.
+
+
+
+\subsection{Typed-Parameterized Channel System}
+\label{sec:channelSystem}
+
+
+Essentially, C2CS defines coordination among entities and their reconfiguration to cope with context changes eventually arising during a mission. These behaviors are described by three different program graphs (PGs) making up C2CS and representing role types played by entities: \textit{Executor (EX)}, \textit{Task Allocator (TA)}, and \textit{C2 approach selector (C2A)}. EX establishes task execution and reconfiguration behavior. TA defines task allocation responsibilities, and C2A specifies a C2 approach change protocol. 
+
+The use of CS allows the execution of parallel processes in a system. Such structure allows us to put the identified papers in parallel execution and allows the exchange of information between them. This exchange is possible through the buffers, i.e., channels, used by the communication actions defined in CS modelling. [[In a nutshell, a CS can be represented as a set of Transition Systems, being each one corresponding to the unfold of each PG in CS. Such principle has a large application in Self Adaptive Systems using automata and Autonomous Systems.]
+
+Given the scope of the research problem, C2CS leverages parameters to abstract from specific mission, entities, and initial conditions. For a particular mission with $n$ members in the team, there will  be only one instance of both the C2A and the TA roles, but $n$ EX instances. The member-to-role-instance mapping is such that each team member plays each EX role instance, and it contributes \textit{partially} to both the TA and the C2A roles, the amount of such contribution depending on the current C2 approach. Conversely, each EX role instance is cohesively encapsulated in one member, whereas the C2A and the TA roles are \textit{scattered} throughout team members, given the inherent collaborative nature of these roles. Types are used to describe the structure of the state of the different PGs as well as of the message content exchanged in synchronous and asynchronous channels.
+Figure \ref{fig:cs} depicts C2CS, whereas Equation~\ref{eq:cs} defines it.
+
 \begin{figure}[!ht]
     \centering
     \scalebox{.75}{\input{tikz/channelSystem}}
     \caption{Channel System Representation}
     \label{fig:CS}
 \end{figure}
+
+\begin{equation}
+    \label{eq:cs}
+    \begin{split}
+    C2CS([FM]\ E,\ &  \mathcal{P}(Task)\ M,\ C2_{ap}\ \omega_0) = [C2A(E, M,\omega_0)\ |\ TA\ | \\ & \ EX(fm_1, \omega_0)\ |\ ...\ |\ EX(fm_n, \omega_0)]
+    \end{split}
+\end{equation}
+
+
+%Team members contribute to all roles with dynamic intensity during the mission. 
+
+In Equation~\ref{eq:cs}, the parameters have the following meaning and types.
+The set $M=\{t_1, t_2,\ ...,\ t_m \}$ is the designated mission, consisting of tasks that the members will try to perform. The list $E = [fm_1, fm_2,\ ...,\ fm_n ]$ of team members is such that each team member has a capability of type $FM$. Additionally, such members  always operate a C2 Approach $\omega \in \Omega$,  where $\Omega =$ \textit{\{Edge, Collaborative, Coordinated, De-Conflicted, Conflicted\}}.
+
+
+
+In a typical C2CS scenario, when the mission starts, TA allocates tasks to team members, which work on accomplishing them. Eventually, to handle context changes, members may reconfigure themselves, e.g., due to sensor failure, or the the TA can reallocate tasks among members, e.g., due to member failure. Alternatively, even a task allocation might not suffice, in which case the C2A might change the C2 approach, prompting new task allocation among members. In the worst scenario, changing the C2 approach does not suffice, so the task fails. Overall, reconfiguration, performing new task allocation, and changing the C2 approach under certain context changes are explicitly represented in the PGs, thereby making up C2CS's strategy to achieve agility (cf. Section~\ref{sec:example}). In the following, we detail each PG.
