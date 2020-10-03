@@ -23,3 +23,17 @@ To separate roles, each one with a proper and unique set of functions, we divide
 \end{itemize}
 
 Furthermore, each member execute its role or set of roles encapsulated in it. For instance, as depicted in Figure \ref{fig:CS}, each member who detains an executor role communicates with the leader, i.e, member who holds the role task allocator, using channel \textit{$ch_1$} in a asynchronous manner. In a similar way, the leader provides tasks to each executor member using channel \textit{$m_2$}. Finally, the C2 approach selector role and task allocator role exchange information using synchronized channels \textit{$ch_2$} and \textit{$ch_3$} to asses performance and check if a maneuver is crucial to maintain quality of execution during the mission. These last channels use synchronized communication because the task allocator role provides performance information using channel \textit{$ch_3$} and waits for the C2 approach selector's response to know if a maneuver might happen. Until this feedback information approaches the channel \textit{$ch_2$}, the task allocator role stops allocating tasks to the remaining members. However, members that execute tasks, i.e, possess executor roles, and allocate tasks, i.e, holds task allocator role, don't need to wait for any response and can continue executing tasks or allocating tasks, justifying the asynchronous communication between these roles.
+
+\begin{figure}[!ht]
+    \centering
+    \scalebox{.65}{\input{tikz/taskAllocator}}
+    \caption{Task Allocator Role Program Graph}
+    \label{fig:TA}
+\end{figure}
+
+% \begin{figure}[!ht]
+%     \centering
+%     \scalebox{.65}{\input{tikz/c2ApproachSelector}}
+%     \caption{C2 Approach Selector Role Program Graph}
+%     \label{fig:C2A}
+% \end{figure}
