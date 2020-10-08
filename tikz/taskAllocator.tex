@@ -90,18 +90,18 @@
 \draw (391,266) node    {$alloc=[] :done$};
 % Text Node
 \draw (346,622) node    {$ \begin{array}{l}
-1 - Var=\{\ alloc:[ \langle \ \mathbb{N} ,[ Task] \ \rangle ] ;\ f\_alloc:([ Task] ,[ FM] ,C2_{ap}) \ \rightarrow [ \langle \ \mathbb{N} ,[ Task] \ \rangle ] ;\ \\
+Var=\{\ alloc:[ \langle \ \mathbb{N} ,[ Task] \ \rangle ] ;\ f\_alloc:([ Task] ,[ FM] ,C2_{ap}) \ \rightarrow [ \langle \ \mathbb{N} ,[ Task] \ \rangle ] ;\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ teamStatus:[ FM] \ \rightarrow \ \langle [ Task] ,[ FM] \rangle ;\ T':[ Task] ;\ T_{success} :[ Task] ;\ \\
 \ \ \ \ \ \ \ \ \ \ \ \ E':[ FM] ;\ t:Task;\ e' :FM;\ \omega :C2_{ap} ;\ T_{add} :[ Task] \ \}\\
-2 - Effect( allocate,\ \eta ) =\ \eta [ alloc:=\ f\_alloc( T',\ E',\ \omega )]\\
-3 - Effect( bind,\ \eta ) =\ \eta [ \ \langle k,T'_{k} \rangle :=head( alloc) ;\ alloc:=tail( alloc) \ ]\\
-4 - Effect( update,\ \eta ) =\begin{cases}
+Effect( allocate,\ \eta ) =\ \eta [ alloc:=\ f\_alloc( T',\ E',\ \omega )]\\
+Effect( bind,\ \eta ) =\ \eta [ \ \langle k,T'_{k} \rangle :=head( alloc) ;\ alloc:=tail( alloc) \ ]\\
+Effect( update,\ \eta ) =\begin{cases}
 \eta [ \ T_{success} :=T_{success} \ ++\ [ t] \ ] & \ \ \ \ if\ ( e'=null)\\
 \eta [ \ T':=T'++\ [ t] \ ;\ E':=E'( e/e'_{\ })] & \ \ \ \ otherwise
 \end{cases} \ \\
-5 - Effect( done,\eta ) =\eta [ \ T':=[] \ ]\\
-6 - Effect( addTasks,\eta ) =\eta [ \ T':=T'++T_{add} \ ]\\
-7 - Effect( memberFailure,\eta ) =\eta [ \ \langle T',E'\rangle :=teamStatus( E') \ ]
+Effect( done,\eta ) =\eta [ \ T':=[] \ ]\\
+Effect( addTasks,\eta ) =\eta [ \ T':=T'++T_{add} \ ]\\
+Effect( memberFailure,\eta ) =\eta [ \ \langle T',E'\rangle :=teamStatus( E') \ ]
 \end{array}$};
 % Text Node
 \draw (219,8) node    {$g_{0}$};
