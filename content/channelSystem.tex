@@ -12,16 +12,16 @@ A channel system is composed of a group of data-dependent processes communicatin
     \label{fig:CS}
 \end{figure}
 
-Figure \ref{fig:CS} illustrates our channel system. The proposed channel system describe our coordination strategy. We decided to model our coordination using separate roles, mainly due to its nature of isolating functional aspects~\cite{roleOrientedModeling}. Also, roles are used to define positions within an organization, encapsulating certain tasks, responsibilities, and goals that an owner of a role has to fulfil~\cite{roleOrientedModeling}. Thus, each member of the team can posses program graphs that describe each role, and more than one role can coexist in the same entity. Also, during maneuvering between different C2 approaches~\cite{france2014}, roles can be added or removed, providing more possibilities to the team during the mission.
+Figure \ref{fig:CS} illustrates our channel system. The proposed channel system describes our coordination strategy. We decided to model our coordination using separate roles, mainly due to its nature of modulatizing functional aspects~\cite{roleOrientedModeling}. Also, roles are used to define positions within an organization, encapsulating certain tasks, responsibilities, and goals that an owner of a role has to fulfil~\cite{roleOrientedModeling}. Thus, each member of the team can posses a program graph that describes a distinct role, and more than one role can coexist in the same entity. Also, during maneuvering between different C2 approaches~\cite{france2014}, roles assignment can be changed, providing more possibilities to the team during the mission.
 
-To separate roles, each one with a proper and unique set of functions, we divided the coordination aspect among two different roles:
+To modularize roles, we divided the coordination aspect among two different roles:
 
 \begin{itemize}
-    \item Task Allocator (TA): responsible for distributing tasks throughout the team, detaining the team members attributes, such as fuel and sensors onboard, to allocate tasks using some norm previously settled. Moreover, this role reports results provided by executors to the C2 approach selector role.
-    \item C2 Approach Selector (C2S): responsible for detecting potential sufficient approaches, due to some drop in performance reported by task allocator. Additionally, it communicates to task allocator if a maneuver will occur.  
+    \item Task Allocator (TA): responsible for distributing tasks throughout the team, based on team members attributes, such as fuel and sensors onboard. Moreover, this role reports results provided by executors to the C2 approach selector role;
+    \item C2 Approach Selector (C2S): responsible for detecting the need of changing the C2 approach, due to some drop in performance reported by task allocator. Additionally, it communicates to task allocator if a maneuver will occur.  
 \end{itemize}
 
-Furthermore, each member execute its set of roles encapsulated in it. For instance, as depicted in Figure \ref{fig:CS}, each member who detains an executor (EX) role communicates with the leader, i.e, member who holds the role TA, using channel \textit{$ch_1$} in a asynchronous manner. In a similar way, the leader provides tasks to each executor member using channel \textit{$m_i$} whereas $i$ is the executor's index. Finally, the C2S role and TA role exchange information using synchronized channels \textit{$ch_2$} and \textit{$ch_3$} to asses performance and check if a maneuver is crucial to maintain quality of execution during the mission. These last channels use synchronized communication because the TA role provides performance information using channel \textit{$ch_3$} and waits for the C2S's response to know if a maneuver might happen. Until this feedback information approaches the channel \textit{$ch_2$}, the TA role stops allocating tasks to the remaining members. However, members that execute tasks, i.e, possess EX role, and allocate tasks, i.e, holds TA role, don't need to wait for any response and can continue executing tasks or allocating tasks, justifying the asynchronous communication between these roles.
+Furthermore, each member executes its set of roles encapsulated in it. For instance, as depicted in Figure \ref{fig:CS}, each member playing the executor (EX) role communicates with the leader, i.e, member who plays the role TA, using channel \textit{$ch_1$} in a asynchronous manner. Similarly, the leader provides tasks to each executor member using channel \textit{$m_i$} whereas $i$ is the executor's index. Finally, the C2S role and TA role exchange information using synchronized channels \textit{$ch_2$} and \textit{$ch_3$} to asses performance and check if a maneuver is crucial to maintain quality of execution during the mission. These latter channels use synchronized communication because the TA role provides performance information using channel \textit{$ch_3$} and waits for the C2S's response to know if a maneuver might happen. Until this feedback information approaches the channel \textit{$ch_2$}, the TA role stops allocating tasks to the remaining members. However, members that execute tasks, i.e, play the EX role, and allocate tasks, i.e, play the TA role, don't need to wait for any response and can continue executing tasks or allocating tasks, justifying the asynchronous communication between these roles.
 
 \begin{figure}[!ht]
     \centering
@@ -30,11 +30,11 @@ Furthermore, each member execute its set of roles encapsulated in it. For instan
     \label{fig:TA}
 \end{figure}
 
-Figure \ref{fig:TA} illustrates our TA role's program graph. Some actions to switch between locations are conditional, e.g, to advance from location "Ready" to location "Allocating" the function $allocate$ can be executed, depending on the comparison between the set of available tasks, $T'$, and an empty set. So, if there are still tasks available, it execute $allocate$ and proceed to location "Allocating". The function $allocate$ assigns to variable $alloc$ the return of the function $f\_alloc$. This last function is specified at line 1 of our variables and functions definitions description. In summary, $alloc$ is assigned a list of pairs, each with an index of a team member and a list of tasks designated to it. To build this list, $f\_alloc$ uses the set of available tasks, $T'$, the set of team members attributes, $E'$, and the current C2 approach, $\omega$, as inputs to perform the task assignment using some criteria established during planning.
+Figure \ref{fig:TA} illustrates the TA role's program graph. It receives a set of variables, e.g, $T'$ and $E'$, from the C2S role, transitioning from location "Waiting" to "Ready". Some actions to switch between locations are conditional, e.g, to advance from location "Ready" to location "Allocating" the action $allocate$ can be executed, depending on the comparison between the set of available tasks, $T'$, and an empty set. So, if there are still tasks available, it execute $allocate$ and proceed to location "Allocating". The action $allocate$ results in assigning to variable $alloc$ the return of the function $f\_alloc$. This last function is specified at line 1 of our variables and functions definitions description. In summary, $alloc$ is assigned a list of pairs, each with an index of a team member and a list of tasks designated to it. To build this list, $f\_alloc$ uses the set of available tasks, $T'$, the set of team members attributes, $E'$, and the current C2 approach, $\omega$, as inputs to perform the task assignment using some criteria established during planning.
 
-% \begin{figure}[!ht]
-%     \centering
-%     \scalebox{.65}{\input{tikz/c2ApproachSelector}}
-%     \caption{C2 Approach Selector Role Program Graph}
-%     \label{fig:C2S}
-% \end{figure}
+\begin{figure}[!ht]
+    \centering
+    \scalebox{.65}{\input{tikz/c2ApproachSelector}}
+    \caption{C2 Approach Selector Role Program Graph}
+    \label{fig:C2S}
+\end{figure}
