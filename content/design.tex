@@ -3,11 +3,22 @@
 
 Our proposed design, using program graphs and channel systems, models a group of entities coordinating to complete a common goal or objective while managing dynamic events. The team's members can be diverse, due to their different set of attributes and behaviours, according to their set of roles. Moreover, due to the heterogeneity of the group, each entity can react to various situations differently, in line with its information about the environment. Also, the communication topology among the team limits their interactions and can have a large impact on the overall system. With that in mind, and following related research~\cite{evaluating} our proposed design fits as an application of an agent-based model (ABM). 
 
-To implement our application of an ABM, we used a framework on the the Java platform, \textit{Repast Symphony}~\cite{repastDoc}. The aforementioned framework is commonly used for ABM simulations~\cite{repast} and it's capacity of simulating parallelism is mandatory in our domain. Finally, the underlying object-oriented paradigm is appropriate to encapsulate each role, i.e, program graph separately, simplifying adding or removing roles throughout the execution.
+To implement our application of an ABM, we used a framework on the Java platform, \textit{Repast Symphony}~\cite{repastDoc}. The aforementioned framework is commonly used for ABM simulations~\cite{repast} and it's capacity of simulating parallelism is mandatory in our domain. Finally, the underlying object-oriented paradigm is appropriate to encapsulate each role, i.e, program graph separately, simplifying adding or removing roles throughout the execution.
+
+We chose our motivating example (Section \ref{sec:motivation}) as the theme of our implementation. Thus, each team member and its functionalities, i.e, onboard sensors and fuel capacity, is encapsulated in a \textit{Drone} class. Also, each role is represented by a \textit{Role} class, e.g, \textit{Executor}, \textit{TaskAllocator}, and \textit{C2ApproachSelector}. Moreover, auxiliary classes were made to add modularity and functionalities, such as providing the visual communication links between members and diversify input types to start the simulation. Based on the following research~\cite{swarmGap}, we used a token-based communication protocol to exchange information among the team (class \textit{Token}), whereas the communication channels and task allocation information are being represented by \textit{Lists}. Figure \ref{fig:ClassDiagram} shows a class diagram of the implementation.
+
+In every round of execution, i.e, in a single time unit (tick) of the simulation, all members execute its \textit{step} method. Additionally, each member performs the \textit{step} method of its roles, which follows the program graphs described in Section 3. For instance, the task allocator (Figure \ref{fig:TA}) role class first check information inside the channel $ch_1$ to receive feedback from the executors. Next, it executes a task allocation algorithm, using the current C2 approach provided by the received Token. If the allocation process is not successful, it informs the C2 approach selector, adding this information to the channel $ch_3$.
+
+Similarly, the main method of the C2 approach selector role's class (\textit{step}) implements its program graph (Figure \ref{fig:C2S}). First, it checks if the task allocator role sent information along the channel $ch_3$. In the case of a maneuver was requested, it assesses a different C2 approach using some criteria, such as defined in the following research~\cite{france2014}. If a change is required, it finishes execution updating maneuver variables in the Token class, asking the team's confirmation to switch to the new C2 approach.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/DiagramaClasse.png}
+  \captionof{figure}{Example of Class Diagram}
+  \label{fig:ClassDiagram}
+\end{figure}
 
 % ROLE-BASED MODELING SECTION
-
-% , despite its implementation uses concurrent programming~\cite{repastDoc}
 
 % Also, because we separate a group of reusable functionalities encapsulated in different roles, our approach also applies principles from role-based modeling~\cite{roleOrientedModeling}.
 
