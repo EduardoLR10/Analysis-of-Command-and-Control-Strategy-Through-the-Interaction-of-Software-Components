@@ -64,7 +64,7 @@ All scenarios created from the variables' values definition consider the same si
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Results and Analysis}
 
-Table~\ref{table:results02} and Figures~\ref{fig:m1},~\ref{fig:m2}, and~\ref{fig:m3} show the results obtained by the simulation. Figure~\ref{fig:m1} shows the maneuvering (M1) metric results for all scenarios, not present in A1 method, with a more constant value due to the cost to perform a C2 Approach change.
+Table~\ref{table:results02} and Figures~\ref{fig:m1},~\ref{fig:m2}, and~\ref{fig:m3} show the results obtained by the simulation. Figure~\ref{fig:m1} shows the maneuvering (M1) metric results for all scenarios, not present in A1 method, with a more constant value due to the cost to perform a C2 Approach change. This result point out to a high level degree of discrepancy in C2 maneuver agility between the two methods.
 
 \begin{figure}[ht]
 \centering
@@ -108,5 +108,3 @@ Additionally, it is possible to identify, through the timeliness metric (M2), th
 With a Shapiro-Wilk test~\citep{stat001} a \textit{p-value} less than 0.05 was obtained, thus indicating a non-normal distribution. Based on this, an Mann-Whitney U Test described in~\cite{stat002} was applied, i.e, Wilcoxon-test in R, to check differences among the samples of each action method applied, i.e, A1 and A2. According to the number and value of samples, the statistical analysis confirmed the difference between all results from A1 and A2 methods, collected in all scenarios tested.
 
 In summary, the empirical findings indicate a better overall performance using the A2 method, despite its longer total execution time. Furthermore, it is possible to observe that the gain in the total amount of completed tasks is greater than the extra required time to finish the mission with the proposed A2 method. Such method enable the system to keep more time in action and allow a greater number of completed tasks. The capabilities embedded in the system result in a resilience increasing and enable the behavioral model the ability to cope with context changes and perturbations in dynamic scenarios.
- 
-
