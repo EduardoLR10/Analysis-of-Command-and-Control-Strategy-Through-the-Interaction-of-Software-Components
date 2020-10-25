@@ -24,7 +24,7 @@
 \usetikzlibrary{patterns}
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
-
+\usepackage{lineno}
 \usepackage[normalem]{ulem}
 \usepackage{tablefootnote}
 \usepackage{colortbl}
@@ -73,7 +73,7 @@
 
 %\begin{frontmatter}
 
-
+\linenumbers
 
 \title{Analysis of Command and Control Strategy Through the Interaction of Software Components}
 
@@ -108,7 +108,7 @@
 %% article.
 \begin{abstract}
 
---
+A group of entities coordinating with each other to accomplish a common objective needs to cope with dynamic events to achieve success. By changing its current organization, the group can avoid unsatisfying results caused be the embedded dynamism related to the scenario. Although it is recognized the presence of unexpected incidents while completing the objective, the current state-of-art does not explore methodologies to increase the capability of handling new circumstances by changing the group's structure. To address this absence, we propose a computational model of a typed-parameterized extension of a channel system and its implementation in the Java Platform. The model is capable of dealing with context changes by providing communication among the group and coordination adjustments when necessary. To evaluate our solution, we conduct a simulation, which exposes the difference between the proposed model and the baseline approach, by a comparison between a series of established metrics.
 
 \end{abstract}
 
@@ -130,24 +130,15 @@
  </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Software and its engineering~Software product lines}
-\ccsdesc[500]{Software and its engineering~Formal software verification}
+\ccsdesc[500]{Software and its engineering~Computing methodologies~Modeling and simulation~Simulation evaluation}
+\ccsdesc[500]{Applied computing~Computers in other domains~Military}
 
-\keywords{Software Product Lines, Product-line Analysis, Framework, Formalization}
+\keywords{Command and Control, C2 Maneuver, Coordination, Channel System, Simulation}
 
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
 \maketitle
-    
-
-%    \input{content/abstract}
-
-%    \begin{keyword}
-%        Software Product Lines\sep Product-line Analysis \sep Verification
-%    \end{keyword}
-
-%\end{frontmatter}
 
 \input{content/introduction}
 \input{content/motivating}
