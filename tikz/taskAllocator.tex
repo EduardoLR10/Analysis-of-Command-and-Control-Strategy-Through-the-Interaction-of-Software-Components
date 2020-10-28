@@ -97,7 +97,6 @@ Effect( update,\ \eta ) =\begin{cases}
 \eta [ \ T':=T'++\ [ t] \ ;\ E':=E'( e/e'_{\ })] & \ \ \ \ otherwise
 \end{cases} \ \\
 Effect( done,\eta ) =\eta [ \ T':=[] \ ]\\
-Effect( addTasks,\eta ) =\eta [ \ T':=T'++T_{add} \ ]\\
 Effect( memberFailure,\eta ) =\eta [ \ \langle T',E'\rangle :=teamStatus( E') \ ]
 \end{array}$};
 % Text Node
